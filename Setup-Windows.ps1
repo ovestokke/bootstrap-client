@@ -2,7 +2,7 @@
 # Windows 10/11 Setup Script
 #
 # @author: Ovestokke
-# @version: 1.1
+# @version: 1.2
 #
 
 #region Setup
@@ -83,6 +83,14 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModel
 # Enable WSL
 wsl --install -d Ubuntu
 
+Write-Host ""
+Write-Host "WSL Ubuntu installation initiated."
+Write-Host "After WSL is set up and running, copy Setup-WSL.sh to WSL and run it:"
+Write-Host "  1. wsl -d Ubuntu"
+Write-Host "  2. cd /mnt/c/path/to/this/directory"
+Write-Host "  3. bash Setup-WSL.sh"
+Write-Host ""
+
 #endregion
 
 #region Install Applications
@@ -110,6 +118,7 @@ $appsToInstall = @(
     "Discord.Discord",
     "Slack.Slack",
     "Microsoft.WindowsTerminal",
+    "wez.wezterm",
     "Google.CloudSDK",
     "Docker.DockerDesktop",
     "Terraform.Terraform",
@@ -122,6 +131,20 @@ $appsToInstall = @(
 foreach ($app in $appsToInstall) {
     winget install --id $app -e --accept-package-agreements --accept-source-agreements
 }
+
+#endregion
+
+#region WezTerm Configuration
+
+# WezTerm config file location: %USERPROFILE%\.wezterm.lua
+# Reference guide: https://www.josean.com/posts/how-to-setup-wezterm-terminal
+# After installation, create ~/.wezterm.lua with your preferred configuration
+# Recommended font: MesloLGS Nerd Font (install via winget or download from GitHub)
+
+Write-Host "To configure WezTerm:"
+Write-Host "1. Create a .wezterm.lua file in your home directory (%USERPROFILE%)"
+Write-Host "2. Install a Nerd Font for icons (e.g., MesloLGS Nerd Font)"
+Write-Host "3. See https://www.josean.com/posts/how-to-setup-wezterm-terminal for configuration examples"
 
 #endregion
 
