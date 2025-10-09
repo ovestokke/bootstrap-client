@@ -1,0 +1,75 @@
+# Windows Applications List
+# This file contains all applications to be installed via winget
+# Format: One package ID per line
+# Lines starting with # are comments and will be ignored
+
+# Browsers
+Mozilla.Firefox
+Google.Chrome
+
+# Development Tools
+Git.Git
+GitHub.GitHubDesktop
+GitHub.cli
+Microsoft.VisualStudioCode
+OpenJS.NodeJS.LTS
+Python.Python.3.12
+Docker.DockerDesktop
+
+Microsoft.WindowsTerminal
+wez.wezterm
+Microsoft.PowerShell
+
+# Cloud & DevOps
+Microsoft.AzureCLI
+Google.CloudSDK
+Hashicorp.Terraform
+Tailscale.Tailscale
+
+# Productivity
+AgileBits.1Password
+Obsidian.Obsidian
+OpenWhisperSystems.Signal
+SlackTechnologies.Slack
+Discord.Discord
+Flow-Launcher.Flow-Launcher
+Microsoft.PowerToys
+
+# Media
+VideoLAN.VLC
+TIDALMusicAS.TIDAL
+
+# Utilities
+7zip.7zip
+JAMSoftware.TreeSize.Free
+
+# Gaming Peripherals
+Logitech.GHUB
+
+# System Monitoring
+REALiX.HWiNFO
+CPUID.CPU-Z
+CPUID.HWMonitor
+TechPowerUp.GPU-Z
+
+# File Management & Sync
+Google.GoogleDrive
+BillStewart.SyncthingWindowsSetup
+
+# AI & Modern Tools
+Anthropic.Claude
+Anthropic.ClaudeCode
+Ollama.Ollama
+SST.opencode
+
+# Design & Creativity
+# JGraph.Draw
+
+# Security & Privacy
+GnuPG.GnuPG
+GnuPG.Gpg4win
+
+# Gaming (Optional - comment out if not needed)
+Valve.Steam
+EpicGames.EpicGamesLauncher
+ElectronicArts.EADesktop
