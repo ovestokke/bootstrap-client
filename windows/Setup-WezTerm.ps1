@@ -121,7 +121,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 $weztermConfig = Join-Path $env:USERPROFILE ".wezterm.lua"
-$repoWeztermConfig = Join-Path $PSScriptRoot ".wezterm.lua"
+$repoWeztermConfig = Join-Path (Split-Path $PSScriptRoot -Parent) ".wezterm.lua"
 
 if (Test-Path $repoWeztermConfig) {
     if (Test-Path $weztermConfig) {

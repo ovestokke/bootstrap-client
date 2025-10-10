@@ -257,93 +257,128 @@ Write-Host ""
 #region Install Applications
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Installing Applications via winget..." -ForegroundColor Cyan
+Write-Host "Application Installation Options" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
-
-# Load applications list from file
-# NOTE: You can find the exact ID of an application by running 'winget search "Application Name"' on your Windows machine.
-# Using the exact ID is more reliable.
-$appsListFile = Join-Path $PSScriptRoot "Apps-List.txt"
-
-if (-not (Test-Path $appsListFile)) {
-    Write-Host "[FAIL] Apps-List.txt not found at: $appsListFile" -ForegroundColor Red
-    Write-Host "Please ensure Apps-List.txt exists in the same directory as this script." -ForegroundColor Yellow
-    Stop-Transcript
-    exit 1
-}
-
-Write-Host "Loading applications list from: $appsListFile" -ForegroundColor Cyan
-
-# Read and parse the apps list file (skip comments and empty lines)
-$appsToInstall = Get-Content $appsListFile |
-    Where-Object { $_ -notmatch '^\s*#' -and $_ -notmatch '^\s*$' } |
-    ForEach-Object { $_.Trim() }
-
-Write-Host "Found $($appsToInstall.Count) applications to install" -ForegroundColor Green
+Write-Host ""
+Write-Host "Choose installation mode:" -ForegroundColor Yellow
+Write-Host "  [1] Skip - No applications (system setup only)" -ForegroundColor White
+Write-Host "  [2] Basic - Essential applications only (~15 apps)" -ForegroundColor White
+Write-Host "  [3] Full - All applications (~60+ apps)" -ForegroundColor White
 Write-Host ""
 
-# Install applications
-$total = $appsToInstall.Count
-$current = 0
-$failed = @()
+$installChoice = Read-Host "Enter your choice (1, 2, or 3)"
 
-foreach ($app in $appsToInstall) {
-    $current++
-    $startTime = Get-Date
+if ($installChoice -eq "1") {
     Write-Host ""
-    Write-Host "========================================" -ForegroundColor DarkGray
-    Write-Host "[$current/$total] Installing: $app" -ForegroundColor Cyan
-    Write-Host "Time: $(Get-Date -Format 'HH:mm:ss')" -ForegroundColor Gray
+    Write-Host "[SKIP] Skipping application installation" -ForegroundColor Yellow
+    Write-Host ""
+}
+elseif ($installChoice -eq "2" -or $installChoice -eq "3") {
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "Installing Applications via winget..." -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host ""
 
-    try {
-        # Start installation with real-time output
-        Write-Host "  Running winget install..." -ForegroundColor Yellow
+    # Determine which apps list to use
+    if ($installChoice -eq "2") {
+        $appsListFile = Join-Path $PSScriptRoot "Apps-List-Basic.txt"
+        Write-Host "Mode: BASIC installation" -ForegroundColor Green
+    }
+    else {
+        $appsListFile = Join-Path $PSScriptRoot "Apps-List-Full.txt"
+        Write-Host "Mode: FULL installation" -ForegroundColor Green
+    }
 
-        $process = Start-Process -FilePath "winget" `
-            -ArgumentList "install --id $app -e --accept-package-agreements --accept-source-agreements" `
-            -NoNewWindow -PassThru -Wait
+    # NOTE: You can find the exact ID of an application by running 'winget search "Application Name"' on your Windows machine.
+    # Using the exact ID is more reliable.
 
-        $duration = ((Get-Date) - $startTime).TotalSeconds
+    if (-not (Test-Path $appsListFile)) {
+        Write-Host "[FAIL] Apps list not found at: $appsListFile" -ForegroundColor Red
+        Write-Host "Please ensure the apps list file exists in the same directory as this script." -ForegroundColor Yellow
+        Stop-Transcript
+        exit 1
+    }
 
-        if ($process.ExitCode -eq 0) {
-            Write-Host "  [OK] Successfully installed $app" -ForegroundColor Green
-            Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
+    Write-Host "Loading applications list from: $appsListFile" -ForegroundColor Cyan
+
+    # Read and parse the apps list file (skip comments and empty lines)
+    $appsToInstall = Get-Content $appsListFile |
+        Where-Object { $_ -notmatch '^\s*#' -and $_ -notmatch '^\s*$' } |
+        ForEach-Object { $_.Trim() }
+
+    Write-Host "Found $($appsToInstall.Count) applications to install" -ForegroundColor Green
+    Write-Host ""
+
+    # Install applications
+    $total = $appsToInstall.Count
+    $current = 0
+    $failed = @()
+
+    foreach ($app in $appsToInstall) {
+        $current++
+        $startTime = Get-Date
+        Write-Host ""
+        Write-Host "========================================" -ForegroundColor DarkGray
+        Write-Host "[$current/$total] Installing: $app" -ForegroundColor Cyan
+        Write-Host "Time: $(Get-Date -Format 'HH:mm:ss')" -ForegroundColor Gray
+
+        try {
+            # Start installation with real-time output
+            Write-Host "  Running winget install..." -ForegroundColor Yellow
+
+            $process = Start-Process -FilePath "winget" `
+                -ArgumentList "install --id $app -e --accept-package-agreements --accept-source-agreements" `
+                -NoNewWindow -PassThru -Wait
+
+            $duration = ((Get-Date) - $startTime).TotalSeconds
+
+            if ($process.ExitCode -eq 0) {
+                Write-Host "  [OK] Successfully installed $app" -ForegroundColor Green
+                Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
+            }
+            elseif ($process.ExitCode -eq -1978335189) {
+                Write-Host "  [SKIP] Already installed: $app" -ForegroundColor Yellow
+                Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
+            }
+            else {
+                Write-Host "  [FAIL] Failed to install $app (Exit code: $($process.ExitCode))" -ForegroundColor Red
+                Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
+                $failed += $app
+            }
         }
-        elseif ($process.ExitCode -eq -1978335189) {
-            Write-Host "  [SKIP] Already installed: $app" -ForegroundColor Yellow
-            Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
-        }
-        else {
-            Write-Host "  [FAIL] Failed to install $app (Exit code: $($process.ExitCode))" -ForegroundColor Red
+        catch {
+            $duration = ((Get-Date) - $startTime).TotalSeconds
+            Write-Host "  [FAIL] Error installing $app - $($_.Exception.Message)" -ForegroundColor Red
             Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
             $failed += $app
         }
     }
-    catch {
-        $duration = ((Get-Date) - $startTime).TotalSeconds
-        Write-Host "  [FAIL] Error installing $app - $($_.Exception.Message)" -ForegroundColor Red
-        Write-Host "  Duration: $([math]::Round($duration, 1))s" -ForegroundColor Gray
-        $failed += $app
-    }
-}
 
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Installation Summary" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Total apps: $total" -ForegroundColor White
-Write-Host "Successful: $($total - $failed.Count)" -ForegroundColor Green
-Write-Host "Failed: $($failed.Count)" -ForegroundColor Red
-
-if ($failed.Count -gt 0) {
     Write-Host ""
-    Write-Host "Failed installations:" -ForegroundColor Red
-    foreach ($app in $failed) {
-        Write-Host "  - $app" -ForegroundColor Red
-    }
-}
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "Installation Summary" -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "Total apps: $total" -ForegroundColor White
+    Write-Host "Successful: $($total - $failed.Count)" -ForegroundColor Green
+    Write-Host "Failed: $($failed.Count)" -ForegroundColor Red
 
-Write-Host ""
+    if ($failed.Count -gt 0) {
+        Write-Host ""
+        Write-Host "Failed installations:" -ForegroundColor Red
+        foreach ($app in $failed) {
+            Write-Host "  - $app" -ForegroundColor Red
+        }
+    }
+
+    Write-Host ""
+}
+else {
+    Write-Host ""
+    Write-Host "[FAIL] Invalid choice. Please run the script again and select 1, 2, or 3." -ForegroundColor Red
+    Stop-Transcript
+    exit 1
+}
 
 #endregion
 
@@ -417,8 +452,12 @@ Write-Host "Additional Setup Available" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Additional setup scripts available:" -ForegroundColor Yellow
-Write-Host "  - Setup-WezTerm.ps1: Configure WezTerm with Nerd Fonts" -ForegroundColor White
-Write-Host "  - Setup-WSL.sh: Configure WSL Ubuntu with Zsh and Oh My Zsh" -ForegroundColor White
+Write-Host "  - Setup-WezTerm.ps1: Install and configure WezTerm terminal" -ForegroundColor White
+Write-Host "  - Setup-Zsh-Windows.ps1: Configure Zsh + Powerlevel10k in WSL" -ForegroundColor White
+Write-Host "  - Setup-GitHubKeys.ps1: Generate and upload SSH & GPG keys to GitHub" -ForegroundColor White
+Write-Host ""
+Write-Host "Legacy scripts (use new Setup-Zsh-Windows.ps1 instead):" -ForegroundColor Gray
+Write-Host "  - Setup-WSL.sh: Old WSL configuration script" -ForegroundColor Gray
 Write-Host ""
 
 #endregion

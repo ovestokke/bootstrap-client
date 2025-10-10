@@ -1,5 +1,5 @@
-# Windows Applications List
-# This file contains all applications to be installed via winget
+# Windows Applications List - FULL
+# Complete set of applications including development, productivity, gaming, etc.
 # Format: One package ID per line
 # Lines starting with # are comments and will be ignored
 
@@ -69,7 +69,7 @@ SST.opencode
 GnuPG.GnuPG
 GnuPG.Gpg4win
 
-# Gaming (Optional - comment out if not needed)
+# Gaming
 Valve.Steam
 EpicGames.EpicGamesLauncher
 ElectronicArts.EADesktop

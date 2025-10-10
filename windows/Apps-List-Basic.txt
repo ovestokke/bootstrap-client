@@ -1,0 +1,20 @@
+# Windows Applications List - BASIC
+# Essential applications for a minimal Windows setup
+# Format: One package ID per line
+# Lines starting with # are comments and will be ignored
+
+# Browsers
+Mozilla.Firefox
+
+# Development Tools - Core
+Git.Git
+GitHub.cli
+Microsoft.VisualStudioCode
+
+# Terminal
+Microsoft.WindowsTerminal
+Microsoft.PowerShell
+
+# Utilities - Essential
+7zip.7zip
+
