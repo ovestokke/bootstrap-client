@@ -248,8 +248,8 @@ if (-not $wslInstalled) {
 Write-Host ""
 Write-Host "After completing this script, configure WSL by running:" -ForegroundColor Cyan
 Write-Host "  1. wsl -d Ubuntu"
-Write-Host "  2. cd /mnt/e/Github/FreshWindowsInstall  (or your path)"
-Write-Host "  3. bash Setup-WSL.sh"
+Write-Host "  2. cd /mnt/c/path/to/bootstrap-client  (or your path)"
+Write-Host "  3. bash linux/Setup-WSL.sh"
 Write-Host ""
 
 #endregion

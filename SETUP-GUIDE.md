@@ -11,20 +11,38 @@ This guide walks you through setting up a fresh Windows 11 installation with all
 - Fresh Windows 11 installation
 - Administrator access
 - Internet connection
-- This repository cloned or downloaded to your system
+- **That's it!** No need to manually clone the repository
 
 **Note:** Scripts are now organized by platform in `windows/`, `macos/`, and `linux/` folders.
 
 ---
 
-## Phase 1: Windows System Setup (30-45 minutes)
+## ⚡ Quick Start (Recommended)
+
+Open PowerShell **as Administrator** and run this single command:
+
+```powershell
+irm https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-Windows.ps1 | iex
+```
+
+This will:
+1. Install Git via winget
+2. Clone the repository to a location of your choice (defaults to C:\bootstrap-client)
+3. Ask if you want to use HTTPS (default), SSH, or a custom URL (for forks)
+4. Launch Setup-Windows.ps1 automatically
+
+**Then continue with the remaining setup scripts as described below.**
+
+---
+
+## 📦 Manual Setup (If Repository Already Cloned)
 
 ### Step 1: Prepare PowerShell
 
 Open PowerShell **as Administrator** and navigate to this directory:
 
 ```powershell
-cd C:\path\to\FreshWindowsInstall\windows
+cd C:\path\to\bootstrap-client\windows
 ```
 
 Set execution policy:
@@ -32,6 +50,10 @@ Set execution policy:
 ```powershell
 Set-ExecutionPolicy Unrestricted -Force
 ```
+
+---
+
+## Phase 1: Windows System Setup (30-45 minutes)
 
 ### Step 2: Run Main Windows Setup Script
 
@@ -162,7 +184,7 @@ After completing all steps, verify your setup:
 - [ ] Bloatware removed (check Start Menu)
 - [ ] Privacy settings applied
 - [ ] File extensions visible in Explorer
-- [ ] All applications from `Apps-List.txt` installed
+- [ ] Applications installed based on selected mode (Skip/Basic/Full)
 - [ ] WSL installed and working: `wsl --list --verbose`
 
 ### Terminal

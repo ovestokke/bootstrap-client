@@ -1,48 +1,117 @@
-# Fresh Install Setup Scripts
+# Bootstrap Client
 
-Cross-platform automation scripts for setting up development environments on Windows, macOS, and Linux.
+**Zero-effort system setup.** One command to go from fresh install to fully configured development environment.
+
+Cross-platform automation scripts for Windows, macOS, and Linux that handle everything: bloatware removal, privacy settings, terminal configuration, shell setup, and developer tools.
+
+---
 
 ## 🚀 Quick Start
 
-### Windows
+### ⚡ One Command — That's It
+
+**Windows** (PowerShell as Administrator):
+```powershell
+irm https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-Windows.ps1 | iex
+```
+
+**macOS**:
+```bash
+curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-macOS.sh | bash
+```
+
+**Linux/Ubuntu**:
+```bash
+curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-Linux.sh | bash
+```
+
+### What Happens Automatically
+
+**The init script will:**
+1. Install Git (winget/Homebrew/apt)
+2. Install Homebrew (macOS only, if needed)
+3. Clone this repository to your chosen location
+4. Present setup options:
+   - **Windows**: Launch system setup with 3 app installation modes (Skip/Basic/Full)
+   - **macOS**: Choose to run WezTerm, Zsh, GitHub keys, or all
+   - **Linux**: Choose to run Zsh, GitHub keys, or both
+
+**No manual git clone needed. No prerequisites. Just run the command.**
+
+### For Forks
+
+If you forked this repo, the init script will ask which URL to use:
+- Option 1: HTTPS (default) - `https://github.com/ovestokke/bootstrap-client.git`
+- Option 2: SSH - `git@github.com:ovestokke/bootstrap-client.git`
+- Option 3: Custom URL - Enter your fork's URL
+
+---
+
+### 📦 Manual Setup (Advanced)
+
+If you already cloned the repo or want to run individual scripts:
+
+<details>
+<summary><b>Windows Scripts</b></summary>
+
 ```powershell
 # Open PowerShell as Administrator
-cd C:\path\to\FreshWindowsInstall\windows
+cd C:\path\to\bootstrap-client\windows
 Set-ExecutionPolicy Unrestricted -Force
-.\Setup-Windows.ps1
-.\Setup-WezTerm.ps1
-.\Setup-Zsh-Windows.ps1
-.\Setup-GitHubKeys.ps1
-```
 
-### macOS
-```bash
-cd /path/to/FreshWindowsInstall/macos
-bash Setup-WezTerm.sh
-bash Setup-Zsh-macOS.sh
-bash Setup-GitHubKeys.sh
+# Run scripts individually
+.\Setup-Windows.ps1      # System setup + apps (30-45 min)
+.\Setup-WezTerm.ps1      # Terminal setup (5 min)
+.\Setup-Zsh-Windows.ps1  # Zsh + tools in WSL (10 min)
+.\Setup-GitHubKeys.ps1   # SSH/GPG keys (5-10 min)
 ```
+</details>
 
-### Linux/Ubuntu
+<details>
+<summary><b>macOS Scripts</b></summary>
+
 ```bash
-cd /path/to/FreshWindowsInstall/linux
-bash Setup-Zsh-Linux.sh
-bash Setup-GitHubKeys.sh
+cd /path/to/bootstrap-client/macos
+
+# Run scripts individually
+bash Setup-WezTerm.sh     # Terminal setup (5-10 min)
+bash Setup-Zsh-macOS.sh   # Zsh + tools (10-15 min)
+bash Setup-GitHubKeys.sh  # SSH/GPG keys (10 min)
 ```
+</details>
+
+<details>
+<summary><b>Linux Scripts</b></summary>
+
+```bash
+cd /path/to/bootstrap-client/linux
+
+# Run scripts individually
+bash Setup-Zsh-Linux.sh   # Zsh + tools (15-20 min)
+bash Setup-GitHubKeys.sh  # SSH/GPG keys (10 min)
+bash Setup-WSL.sh         # Legacy WSL setup (deprecated)
+```
+</details>
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-FreshWindowsInstall/
+bootstrap-client/
+├── Init-Windows.ps1   # 🚀 One-line Windows initialization
+├── Init-macOS.sh      # 🚀 One-line macOS initialization
+├── Init-Linux.sh      # 🚀 One-line Linux initialization
+│
 ├── windows/           # Windows PowerShell scripts
 │   ├── Setup-Windows.ps1        # Main Windows setup (bloatware, privacy, apps)
 │   ├── Setup-WezTerm.ps1        # WezTerm terminal setup
 │   ├── Setup-Zsh-Windows.ps1    # Zsh setup (WSL wrapper)
 │   ├── Setup-GitHubKeys.ps1     # GitHub SSH/GPG keys
 │   ├── Get-InstalledSoftware.ps1
-│   ├── Apps-List.txt            # Applications to install via winget
+│   ├── Verify-WingetApps.ps1
+│   ├── Apps-List-Basic.txt      # Essential applications (~15 apps)
+│   ├── Apps-List-Full.txt       # Complete applications (~60 apps)
 │   └── README.md
 │
 ├── macos/             # macOS Bash scripts
@@ -78,135 +147,268 @@ FreshWindowsInstall/
 
 ## 🎯 What Gets Installed
 
-### Windows (`windows/Setup-Windows.ps1`)
-- ✓ Removes bloatware (Cortana, Office Hub, etc.)
-- ✓ Configures privacy settings (disable telemetry)
-- ✓ Configures UI/UX (show file extensions, hidden files)
-- ✓ Enables Developer Mode
-- ✓ Installs WSL with Ubuntu
-- ✓ Interactive app installation with 3 modes:
-  - **Skip** - No apps (system only)
-  - **Basic** - ~15 essential apps
-  - **Full** - 60+ apps (dev, productivity, gaming, etc.)
-- ✓ Downloads and installs NVIDIA App
+<details open>
+<summary><b>Windows System Setup</b></summary>
 
-### Terminal Setup (All Platforms)
-- ✓ WezTerm terminal emulator
-- ✓ Meslo Nerd Font
-- ✓ Custom keybindings (vim-style navigation)
-- ✓ Cross-platform configuration
+### `Setup-Windows.ps1` (30-45 min)
+- ✓ **Debloat**: Removes Cortana, Office Hub, Feedback Hub, etc.
+- ✓ **Privacy**: Disables telemetry, web search in Start Menu
+- ✓ **UI/UX**: Shows file extensions and hidden files
+- ✓ **Developer Mode**: Enables development features
+- ✓ **WSL + Ubuntu**: Full installation (no launch required)
+- ✓ **Applications**: 3 installation modes
+  - **Skip** - System setup only, no apps
+  - **Basic** - 15 essential apps (browsers, dev tools, 1Password, Obsidian)
+  - **Full** - 60+ apps (everything + gaming, media, productivity)
+- ✓ **NVIDIA App**: Auto-downloads and installs latest version
 
-### Zsh Setup (All Platforms)
-- ✓ Zsh shell
-- ✓ Powerlevel10k theme
-- ✓ zsh-autosuggestions
-- ✓ zsh-syntax-highlighting
-- ✓ eza (better ls)
-- ✓ zoxide (better cd)
-- ✓ History search with arrow keys
+See `windows/Apps-List-Basic.txt` and `windows/Apps-List-Full.txt` for complete lists.
+</details>
 
-### GitHub Integration (All Platforms)
-- ✓ SSH ed25519 key generation
-- ✓ GPG 4096-bit RSA key generation
-- ✓ Auto-signed Git commits
-- ✓ Keys uploaded to GitHub
+<details open>
+<summary><b>Terminal Setup (All Platforms)</b></summary>
+
+### `Setup-WezTerm` (5-10 min)
+- ✓ **WezTerm**: GPU-accelerated terminal with modern features
+- ✓ **Meslo Nerd Font**: Powerline icons and glyphs
+- ✓ **Custom Config**: Vim-style navigation (CTRL+h/j/k/l for panes)
+- ✓ **Coolnight Theme**: Custom color scheme
+- ✓ **Cross-platform**: Same config on Windows, macOS, Linux
+</details>
+
+<details open>
+<summary><b>Zsh + Modern CLI Tools (All Platforms)</b></summary>
+
+### `Setup-Zsh-*` (10-20 min)
+- ✓ **Zsh Shell**: Modern shell with powerful features
+- ✓ **Powerlevel10k**: Beautiful, fast theme with git integration
+- ✓ **Plugins**:
+  - `zsh-autosuggestions` - Fish-like suggestions
+  - `zsh-syntax-highlighting` - Real-time syntax validation
+- ✓ **Modern Tools**:
+  - `eza` - Better `ls` with colors and icons
+  - `zoxide` - Smart `cd` with frecency algorithm
+- ✓ **History**: Arrow key search, deduplication
+- ✓ **Nerd Fonts**: Icons and glyphs (Linux only, macOS uses system font)
+
+**Platform Differences:**
+- **macOS**: Homebrew-based, no Oh My Zsh (lighter, faster)
+- **Linux/WSL**: Oh My Zsh framework (more plugins, wider compatibility)
+- **Both**: Identical user experience and functionality
+</details>
+
+<details open>
+<summary><b>GitHub Integration (All Platforms)</b></summary>
+
+### `Setup-GitHubKeys` (5-10 min)
+- ✓ **SSH Key**: ed25519 key generation
+- ✓ **GPG Key**: 4096-bit RSA for commit signing
+- ✓ **Git Config**: Auto-sign all commits
+- ✓ **GitHub Upload**: Automatic key upload via `gh` CLI
+- ✓ **Verification**: Signed commits show "Verified" badge
+
+All future commits will be automatically signed and verified on GitHub.
+</details>
 
 ---
 
 ## ⏱️ Time Estimates
 
-| Platform | Task | Time |
-|----------|------|------|
-| **Windows** | System Setup | 30-45 min |
-| | Terminal Setup | 5 min |
-| | Zsh Setup | 10 min |
-| | GitHub Keys | 10 min |
-| | **Total** | **1-2 hours** |
-| **macOS** | Terminal Setup | 5-10 min |
-| | Zsh Setup | 10-15 min |
-| | GitHub Keys | 10 min |
-| | **Total** | **30-45 min** |
-| **Linux** | Zsh Setup | 15-20 min |
-| | **Total** | **15-20 min** |
+| Platform | Mode | Total Time | Notes |
+|----------|------|------------|-------|
+| **Windows** | Skip apps | ~45 min | System setup + terminal + zsh + keys |
+| | Basic (15 apps) | ~1 hour | + essential app installations |
+| | Full (60+ apps) | ~2 hours | + complete app suite |
+| **macOS** | All scripts | ~30-45 min | Terminal + zsh + keys |
+| **Linux** | All scripts | ~15-20 min | Zsh + keys |
+
+**Note:** Most time is spent on automated installations. You can do other tasks while scripts run.
 
 ---
 
-## 🔧 Platform Differences
+## 🔧 Features & Philosophy
 
-### Zsh Setup Approaches
+### Design Principles
 
-**macOS** (Homebrew-based):
-- No Oh My Zsh dependency
-- Installs everything via Homebrew
-- Sources plugins directly in `.zshrc`
-- Lighter and faster
-- Easy updates: `brew upgrade`
+1. **Zero Manual Steps**: One command from fresh install to configured system
+2. **Sensible Defaults**: Works out of the box, customizable if needed
+3. **Cross-Platform**: Same experience on Windows, macOS, Linux
+4. **Idempotent**: Safe to run multiple times, won't break existing setups
+5. **Logged**: Everything logged with timestamps for debugging
+6. **Interactive**: Choose what to install, no forced installations
 
-**Linux/WSL** (Oh My Zsh-based):
-- Uses Oh My Zsh framework
-- Git clones P10k and plugins
-- Oh My Zsh plugin system
-- Works on any Debian-based distro
-- Update with `git pull`
+### Platform-Specific Approaches
 
-Both approaches provide the **same user experience** with identical functionality.
+**Windows:**
+- Uses native `winget` package manager (built into Windows 11)
+- PowerShell scripts with admin elevation checks
+- WSL for Linux environment (Ubuntu)
+- Separate app lists for flexibility (Basic/Full)
+
+**macOS:**
+- Homebrew for all package management
+- No Oh My Zsh dependency (lighter, faster)
+- Native Zsh (default shell since Catalina)
+- Xcode CLI tools for Git
+
+**Linux:**
+- Uses `apt` for system packages
+- Oh My Zsh framework for broader compatibility
+- Works on Ubuntu, Debian, WSL
+- Third-party repos for modern tools (eza, zoxide)
+
+All platforms achieve **identical end-user experience** despite different installation methods.
 
 ---
 
 ## 📋 Prerequisites
 
-### Windows
-- Windows 11 (or Windows 10 with latest updates)
-- Administrator access
-- Internet connection
+**Literally nothing.** Just run the command.
 
-### macOS
-- macOS 11+ (Big Sur or later)
-- [Homebrew](https://brew.sh/) installed
-- Zsh (default shell on macOS)
+| Platform | Requirements |
+|----------|--------------|
+| **Windows** | Windows 11 (or 10 with updates) + Admin access + Internet |
+| **macOS** | macOS 11+ (Big Sur or later) + Internet |
+| **Linux** | Ubuntu 20.04+ or Debian 10+ + sudo access + Internet |
 
-### Linux
-- Ubuntu 20.04+ or Debian 10+
-- `sudo` access
-- Internet connection
+The init script automatically installs:
+- ✓ Git (via winget/Xcode CLI/apt)
+- ✓ Homebrew (macOS only, if not present)
+- ✓ curl (Linux only, if not present)
+
+**No need to:**
+- ❌ Install Git first
+- ❌ Clone the repository manually
+- ❌ Install package managers
+- ❌ Download anything beforehand
+
+Just copy-paste the one-line command and go.
 
 ---
 
 ## 🎨 Customization
 
-### Applications (Windows)
+### Before Running
 
-**Choose during setup:**
-- **Skip** - No applications installed
-- **Basic** - Essential apps (~15): Edit `windows/Apps-List-Basic.txt`
-- **Full** - All apps (~60+): Edit `windows/Apps-List-Full.txt`
+**Fork this repo if you want to:**
+- Customize app lists (Windows)
+- Modify WezTerm configuration
+- Change Zsh defaults
+- Add your own scripts
 
-**To customize:**
+The init script will ask for your fork's URL (Option 3: Custom URL).
+
+### After Running
+
+<details>
+<summary><b>Windows Applications</b></summary>
+
+Edit app lists before first run:
+- `windows/Apps-List-Basic.txt` - 15 essential apps
+- `windows/Apps-List-Full.txt` - 60+ complete suite
+
 ```txt
-# Add your apps (find IDs with: winget search "AppName")
-Example.AppName
+# Find app IDs with:
+winget search "Application Name"
 
-# Comment out apps you don't need
+# Add apps (use exact ID)
+Microsoft.VisualStudioCode
+
+# Comment out unwanted apps
 # Valve.Steam
+# EpicGames.EpicGamesLauncher
 ```
 
-### WezTerm Configuration
-Edit `.wezterm.lua` to customize:
-- Color scheme
-- Font size
-- Keybindings
-- Window opacity
+App categories in Full list:
+- Browsers, Dev tools, Productivity, Media, Gaming, Utilities
+</details>
 
-### Zsh Configuration
-Edit `~/.zshrc` to customize:
-- Aliases
-- Environment variables
-- Additional plugins
+<details>
+<summary><b>WezTerm Terminal</b></summary>
 
-Edit `~/.p10k.zsh` to customize Powerlevel10k:
-- Colors
-- Prompt segments
-- Icons
+Edit `~/.wezterm.lua` (Windows: `%USERPROFILE%\.wezterm.lua`):
+
+```lua
+-- Color scheme
+config.color_scheme = 'Coolnight'  -- or 'Batman', 'Tokyo Night', etc.
+
+-- Font size
+config.font_size = 13  -- default: 13
+
+-- Opacity
+config.window_background_opacity = 0.98  -- 0.0 to 1.0
+
+-- Default program (Windows WSL)
+config.default_prog = { 'wsl.exe', '-d', 'Ubuntu' }
+```
+
+See [WezTerm docs](https://wezfurlong.org/wezterm/config/files.html) for more options.
+</details>
+
+<details>
+<summary><b>Zsh Configuration</b></summary>
+
+**General Zsh** (`~/.zshrc`):
+```bash
+# Add custom aliases
+alias ll='ls -la'
+alias g='git'
+alias dc='docker-compose'
+
+# Environment variables
+export EDITOR="code"
+export PATH="$HOME/bin:$PATH"
+
+# Additional Oh My Zsh plugins (Linux/WSL)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting docker kubectl)
+```
+
+**Powerlevel10k Theme** (`~/.p10k.zsh`):
+```bash
+# Re-run configuration wizard anytime:
+p10k configure
+
+# Or edit ~/.p10k.zsh directly for:
+# - Prompt segments (git, directory, time, etc.)
+# - Colors and icons
+# - Left/right prompt layout
+```
+
+**Tool Options**:
+```bash
+# eza (ls) options
+alias ls='eza --icons=always --group-directories-first'
+alias ll='eza --icons=always --long --group-directories-first'
+alias la='eza --icons=always --long --all --group-directories-first'
+
+# zoxide (cd) aliases
+alias cd='z'
+alias cdi='zi'  # interactive selection
+```
+</details>
+
+<details>
+<summary><b>Git Configuration</b></summary>
+
+After `Setup-GitHubKeys`:
+
+```bash
+# View current config
+git config --global --list
+
+# Change commit signing
+git config --global commit.gpgsign true  # or false
+
+# Change default editor
+git config --global core.editor "code --wait"
+
+# Git aliases
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.st status
+git config --global alias.cm "commit -m"
+```
+</details>
 
 ---
 
