@@ -435,57 +435,87 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "NVIDIA App Installation" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "NVIDIA App is not available on winget." -ForegroundColor Yellow
-Write-Host "Attempting to download and install the latest version..." -ForegroundColor Yellow
-Write-Host ""
 
-try {
-    # Scrape the latest download URL from NVIDIA's website
-    Write-Host "Fetching latest NVIDIA App version..." -ForegroundColor Cyan
-    $nvidiaPage = Invoke-WebRequest -Uri "https://www.nvidia.com/en-us/software/nvidia-app/" -UseBasicParsing -ErrorAction Stop
-    $downloadUrl = ($nvidiaPage.Content | Select-String -Pattern 'https://[^"]*NVIDIA_app[^"]*\.exe' -AllMatches).Matches[0].Value
+# Detect NVIDIA GPU
+Write-Host "Detecting NVIDIA GPU..." -ForegroundColor Cyan
+$nvidiaGPU = Get-CimInstance Win32_VideoController | Where-Object { $_.Name -like "*NVIDIA*" }
 
-    if ($downloadUrl) {
-        Write-Host "Found download URL: $downloadUrl" -ForegroundColor Green
+if ($nvidiaGPU) {
+    Write-Host "[OK] NVIDIA GPU detected:" -ForegroundColor Green
+    foreach ($gpu in $nvidiaGPU) {
+        Write-Host "  → $($gpu.Name)" -ForegroundColor White
+    }
+    Write-Host ""
+    
+    $installNvidia = Read-Host "Install NVIDIA App? (Y/N)"
+    
+    if ($installNvidia -eq "Y" -or $installNvidia -eq "y") {
+        Write-Host ""
+        Write-Host "NVIDIA App is not available on winget." -ForegroundColor Yellow
+        Write-Host "Attempting to download and install the latest version..." -ForegroundColor Yellow
+        Write-Host ""
 
-        # Extract version from URL
-        if ($downloadUrl -match 'v?([\d\.]+)') {
-            $version = $Matches[1]
+        try {
+            # Scrape the latest download URL from NVIDIA's website
+            Write-Host "Fetching latest NVIDIA App version..." -ForegroundColor Cyan
+            $nvidiaPage = Invoke-WebRequest -Uri "https://www.nvidia.com/en-us/software/nvidia-app/" -UseBasicParsing -ErrorAction Stop
+            $downloadUrl = ($nvidiaPage.Content | Select-String -Pattern 'https://[^"]*NVIDIA_app[^"]*\.exe' -AllMatches).Matches[0].Value
+
+            if ($downloadUrl) {
+                Write-Host "Found download URL: $downloadUrl" -ForegroundColor Green
+
+                # Extract version from URL
+                if ($downloadUrl -match 'v?([\d\.]+)') {
+                    $version = $Matches[1]
+                }
+                else {
+                    $version = "unknown"
+                }
+                Write-Host "Version: $version" -ForegroundColor Green
+
+                # Download the installer
+                $installerPath = Join-Path $env:TEMP "NVIDIA_app_installer.exe"
+                Write-Host "Downloading NVIDIA App to: $installerPath" -ForegroundColor Cyan
+
+                Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath -ErrorAction Stop
+                Write-Host "[OK] Download completed" -ForegroundColor Green
+
+                # Install NVIDIA App
+                Write-Host "Installing NVIDIA App (this may take a few minutes)..." -ForegroundColor Cyan
+                $installProcess = Start-Process -FilePath $installerPath -ArgumentList "/s" -Wait -PassThru -ErrorAction Stop
+
+                if ($installProcess.ExitCode -eq 0) {
+                    Write-Host "[OK] NVIDIA App installed successfully" -ForegroundColor Green
+                }
+                else {
+                    Write-Host "[FAIL] Installation failed with exit code: $($installProcess.ExitCode)" -ForegroundColor Red
+                }
+
+                # Clean up installer
+                Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
+            }
+            else {
+                Write-Host "[FAIL] Could not find download URL" -ForegroundColor Red
+                Write-Host "Please download manually from: https://www.nvidia.com/en-us/software/nvidia-app/" -ForegroundColor Yellow
+            }
         }
-        else {
-            $version = "unknown"
+        catch {
+            Write-Host "[FAIL] Error downloading/installing NVIDIA App: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "Please download manually from: https://www.nvidia.com/en-us/software/nvidia-app/" -ForegroundColor Yellow
         }
-        Write-Host "Version: $version" -ForegroundColor Green
-
-        # Download the installer
-        $installerPath = Join-Path $env:TEMP "NVIDIA_app_installer.exe"
-        Write-Host "Downloading NVIDIA App to: $installerPath" -ForegroundColor Cyan
-
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath -ErrorAction Stop
-        Write-Host "[OK] Download completed" -ForegroundColor Green
-
-        # Install NVIDIA App
-        Write-Host "Installing NVIDIA App (this may take a few minutes)..." -ForegroundColor Cyan
-        $installProcess = Start-Process -FilePath $installerPath -ArgumentList "/s" -Wait -PassThru -ErrorAction Stop
-
-        if ($installProcess.ExitCode -eq 0) {
-            Write-Host "[OK] NVIDIA App installed successfully" -ForegroundColor Green
-        }
-        else {
-            Write-Host "[FAIL] Installation failed with exit code: $($installProcess.ExitCode)" -ForegroundColor Red
-        }
-
-        # Clean up installer
-        Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
     }
     else {
-        Write-Host "[FAIL] Could not find download URL" -ForegroundColor Red
-        Write-Host "Please download manually from: https://www.nvidia.com/en-us/software/nvidia-app/" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "[SKIP] Skipping NVIDIA App installation" -ForegroundColor Yellow
+        Write-Host "You can download manually from: https://www.nvidia.com/en-us/software/nvidia-app/" -ForegroundColor Yellow
     }
 }
-catch {
-    Write-Host "[FAIL] Error downloading/installing NVIDIA App: $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host "Please download manually from: https://www.nvidia.com/en-us/software/nvidia-app/" -ForegroundColor Yellow
+else {
+    Write-Host "[INFO] No NVIDIA GPU detected" -ForegroundColor Yellow
+    Write-Host "[SKIP] Skipping NVIDIA App installation" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "If you plan to install an NVIDIA GPU later, download from:" -ForegroundColor Cyan
+    Write-Host "https://www.nvidia.com/en-us/software/nvidia-app/" -ForegroundColor White
 }
 
 Write-Host ""
