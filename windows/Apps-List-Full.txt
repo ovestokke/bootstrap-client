@@ -59,7 +59,7 @@ BillStewart.SyncthingWindowsSetup
 # AI & Modern Tools
 Anthropic.Claude
 Anthropic.ClaudeCode
-Ollama.Ollama
+# Ollama.Ollama
 SST.opencode
 
 # Design & Creativity
