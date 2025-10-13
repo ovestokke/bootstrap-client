@@ -196,8 +196,9 @@ Write-Host ""
 #region WSL
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Installing WSL..." -ForegroundColor Cyan
+Write-Host "WSL Installation" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
 
 # Check if WSL is already installed
 $wslInstalled = $false
@@ -205,15 +206,23 @@ try {
     $wslCheck = wsl --list 2>&1
     if ($LASTEXITCODE -eq 0) {
         $wslInstalled = $true
-        Write-Host "WSL is already installed." -ForegroundColor Green
+        Write-Host "[OK] WSL is already installed" -ForegroundColor Green
 
         # Check if Ubuntu is installed
         if ($wslCheck -match "Ubuntu") {
-            Write-Host "Ubuntu distribution is already installed." -ForegroundColor Green
+            Write-Host "[OK] Ubuntu distribution is already installed" -ForegroundColor Green
         }
         else {
-            Write-Host "Installing Ubuntu distribution..." -ForegroundColor Yellow
-            wsl --install -d Ubuntu --no-launch
+            Write-Host "[INFO] Ubuntu distribution not found" -ForegroundColor Yellow
+            $installUbuntu = Read-Host "Install Ubuntu distribution? (Y/N)"
+            if ($installUbuntu -eq "Y" -or $installUbuntu -eq "y") {
+                Write-Host "Installing Ubuntu distribution..." -ForegroundColor Yellow
+                wsl --install -d Ubuntu --no-launch
+                Write-Host "[OK] Ubuntu installed" -ForegroundColor Green
+            }
+            else {
+                Write-Host "[SKIP] Skipping Ubuntu installation" -ForegroundColor Yellow
+            }
         }
     }
 }
@@ -222,34 +231,72 @@ catch {
 }
 
 if (-not $wslInstalled) {
-    Write-Host "Installing WSL and Ubuntu (without launching)..." -ForegroundColor Yellow
-    wsl --install -d Ubuntu --no-launch
-
+    Write-Host "WSL is not currently installed." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "IMPORTANT: WSL installation requires a system reboot!" -ForegroundColor Yellow
-    Write-Host "After reboot, run this script again to continue with application installation." -ForegroundColor Yellow
+    Write-Host "WSL (Windows Subsystem for Linux) provides:" -ForegroundColor Cyan
+    Write-Host "  - Full Linux environment (Ubuntu)" -ForegroundColor White
+    Write-Host "  - Required for Zsh setup scripts" -ForegroundColor White
+    Write-Host "  - Better development tools experience" -ForegroundColor White
     Write-Host ""
+    Write-Host "NOTE: WSL requires nested virtualization support." -ForegroundColor Yellow
+    Write-Host "If running in a VM without nested virtualization, skip WSL." -ForegroundColor Yellow
+    Write-Host ""
+    
+    $installWSL = Read-Host "Install WSL and Ubuntu? (Y/N)"
+    
+    if ($installWSL -eq "Y" -or $installWSL -eq "y") {
+        Write-Host ""
+        Write-Host "Installing WSL and Ubuntu (without launching)..." -ForegroundColor Yellow
+        
+        try {
+            wsl --install -d Ubuntu --no-launch
+            
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "[OK] WSL installation completed" -ForegroundColor Green
+                Write-Host ""
+                Write-Host "IMPORTANT: WSL installation requires a system reboot!" -ForegroundColor Yellow
+                Write-Host "After reboot, run this script again to continue with application installation." -ForegroundColor Yellow
+                Write-Host ""
 
-    $reboot = Read-Host "Would you like to reboot now? (Y/N)"
-    if ($reboot -eq "Y" -or $reboot -eq "y") {
-        Write-Host "Rebooting in 10 seconds..." -ForegroundColor Red
-        Start-Sleep -Seconds 10
-        Restart-Computer -Force
-        exit
+                $reboot = Read-Host "Would you like to reboot now? (Y/N)"
+                if ($reboot -eq "Y" -or $reboot -eq "y") {
+                    Write-Host "Rebooting in 10 seconds..." -ForegroundColor Red
+                    Start-Sleep -Seconds 10
+                    Restart-Computer -Force
+                    exit
+                }
+                else {
+                    Write-Host ""
+                    Write-Host "Please reboot manually and run this script again." -ForegroundColor Yellow
+                    Stop-Transcript
+                    exit
+                }
+            }
+            else {
+                Write-Host "[FAIL] WSL installation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+                Write-Host "Continuing with remaining setup..." -ForegroundColor Yellow
+            }
+        }
+        catch {
+            Write-Host "[FAIL] WSL installation error: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "Continuing with remaining setup..." -ForegroundColor Yellow
+        }
     }
     else {
         Write-Host ""
-        Write-Host "Please reboot manually and run this script again." -ForegroundColor Yellow
-        Stop-Transcript
-        exit
+        Write-Host "[SKIP] Skipping WSL installation" -ForegroundColor Yellow
+        Write-Host "You can install WSL manually later with: wsl --install" -ForegroundColor Cyan
     }
 }
+else {
+    Write-Host ""
+    Write-Host "After completing this script, configure WSL by running:" -ForegroundColor Cyan
+    Write-Host "  1. wsl -d Ubuntu" -ForegroundColor White
+    Write-Host "  2. cd /mnt/c/path/to/bootstrap-client" -ForegroundColor White
+    Write-Host "  3. bash linux/Setup-Zsh-Linux.sh" -ForegroundColor White
+    Write-Host "  4. bash linux/Setup-GitHubKeys.sh" -ForegroundColor White
+}
 
-Write-Host ""
-Write-Host "After completing this script, configure WSL by running:" -ForegroundColor Cyan
-Write-Host "  1. wsl -d Ubuntu"
-Write-Host "  2. cd /mnt/c/path/to/bootstrap-client  (or your path)"
-Write-Host "  3. bash linux/Setup-WSL.sh"
 Write-Host ""
 
 #endregion
