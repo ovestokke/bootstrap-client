@@ -6,11 +6,17 @@ local config = wezterm.config_builder()
 
 -- This is where you actually apply your config choices
 
-config.color_scheme = 'Batman'
+-- Set default shell based on platform
+if wezterm.target_triple == 'x86_64-pc-windows-msvc' or wezterm.target_triple == 'aarch64-pc-windows-msvc' then
+  config.default_prog = { 'pwsh.exe' }
+elseif wezterm.target_triple == 'x86_64-apple-darwin' or wezterm.target_triple == 'aarch64-apple-darwin' then
+  config.default_prog = { 'zsh' }
+end
+
+config.color_scheme = 'Catppuccin Mocha'
 -- config.color_scheme = 'Lunaria Dark (Gogh)'
 config.font = wezterm.font("MesloLGS NF")
--- config.font = wezterm.font("MesloLGS Nerd Font Mono")
-config.font_size = 14
+config.font_size = 12
 
 -- Set initial window size (columns x rows)
 config.initial_cols = 120
