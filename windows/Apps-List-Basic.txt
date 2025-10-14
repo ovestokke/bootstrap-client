@@ -18,3 +18,6 @@ Microsoft.PowerShell
 # Utilities - Essential
 7zip.7zip
 
+# Privacy & Security
+OO-Software.ShutUp10
+
