@@ -43,6 +43,11 @@ TIDALMusicAS.TIDAL
 7zip.7zip
 JAMSoftware.TreeSize.Free
 
+# Utilities - Advanced
+sharkdp.bat                          # Better 'cat' with syntax highlighting
+Klocman.BulkCrapUninstaller          # Advanced uninstaller utility
+BleachBit.BleachBit                  # System cleaner and privacy tool
+
 # Gaming Peripherals
 Logitech.GHUB
 

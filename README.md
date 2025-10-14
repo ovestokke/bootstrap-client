@@ -459,6 +459,32 @@ Based on: [Josean's WezTerm Terminal Setup Guide](https://www.josean.com/posts/h
 
 ---
 
+## 🧩 Complementary Tools
+
+### Chris Titus Tech WinUtil (Optional)
+A popular community tool for additional Windows cleanup and tweaking. Use it AFTER running `Setup-Windows.ps1` if you want to:
+- Apply extra GUI‑driven privacy / services tweaks
+- Audit / remove remaining Microsoft Store apps
+- Tweak Windows features granularly (services, context menu, scheduled tasks)
+- Run additional debloat steps or selective installs
+
+Quick launch (PowerShell as Administrator):
+```powershell
+irm "https://christitus.com/win" | iex
+```
+
+Why it's complementary (not a replacement):
+- This repository already performs a curated, opinionated baseline (bloat removal, privacy, dev tooling)
+- WinUtil lets you visually review and optionally apply further changes
+- Running it first can overlap with our automated steps; run it after to layer fine‑grained tweaks
+
+Recommendations:
+- Create a restore point before large tweak batches
+- Review each tab; avoid blindly applying every toggle
+- Skip duplicate debloat actions already handled here (e.g., Cortana removal)
+
+---
+
 ## 📄 License
 
 Personal use. Feel free to fork and customize for your own needs.

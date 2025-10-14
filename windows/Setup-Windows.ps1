@@ -2,7 +2,7 @@
 # Windows 10/11 Setup Script
 #
 # @author: Ovestokke
-# @version: 1.3
+# @version: 1.4
 #
 
 #region Setup
@@ -159,6 +159,11 @@ Set-RegistryValue -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Na
 
 # Disable Cortana
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Value 0
+
+# Disable Activity History (timeline, clipboard history, recent documents)
+Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Value 0
+Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Value 0
+Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Value 0
 
 Write-Host ""
 

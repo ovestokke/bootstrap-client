@@ -168,6 +168,28 @@ Run scripts in this order for a complete Windows setup:
 
 ---
 
+## Complementary Tools (Optional)
+
+### Chris Titus Tech WinUtil
+A GUI-driven Windows optimization and debloat utility. Use it AFTER running `Setup-Windows.ps1` if you want to:
+- Inspect/disable additional services & scheduled tasks
+- Apply granular privacy toggles beyond this repo's curated baseline
+- Audit/remove remaining Microsoft Store apps
+- Explore optional tweaks (context menu, UI, cleanup)
+
+Launch (PowerShell as Administrator):
+```powershell
+irm "https://christitus.com/win" | iex
+```
+
+Guidelines:
+- Create a restore point before large tweak batches
+- Avoid blindly selecting all debloat options
+- Skip duplicate actions already automated here (telemetry baseline, Cortana removal)
+- Log/manual note any changes for reproducibility
+
+---
+
 ## See Also
 
 - `../SETUP-GUIDE.md` - Complete setup guide with detailed instructions

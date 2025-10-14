@@ -2,6 +2,8 @@
 
 Bash scripts for macOS development environment setup.
 
+## Planned: 
+https://github.com/nikitabobko/AeroSpace
 ## Scripts
 
 ### Setup-Zsh-macOS.sh

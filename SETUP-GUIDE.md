@@ -312,6 +312,33 @@ Edit `~/.p10k.zsh` (in WSL) to customize Powerlevel10k theme:
 
 ---
 
+## Complementary Tools (Optional)
+
+### Chris Titus Tech WinUtil
+Community-driven Windows maintenance and tweaking utility. Run it AFTER this guide's automated scripts if you want to:
+- Apply additional GUI privacy / telemetry tweaks
+- Inspect and selectively disable services / scheduled tasks
+- Perform further debloat beyond curated defaults
+- Audit Microsoft Store apps and remove leftovers
+- Apply selective performance or UI adjustments
+
+Launch (PowerShell as Administrator):
+```powershell
+irm "https://christitus.com/win" | iex
+```
+
+Best Practices:
+- Create a system restore point before large batches
+- Review each tab rather than bulk‑applying everything
+- Skip actions already handled by `Setup-Windows.ps1` (e.g., Cortana, telemetry baseline)
+- Document any manual tweaks you apply for future reproducibility
+
+Why Not Integrated Directly?
+- Philosophy here: minimal, opinionated, reproducible baseline
+- WinUtil: broad surface area, user‑driven, potentially overreaching if automated blindly
+
+---
+
 ## Post-Setup Recommendations
 
 ### 1. Configure 1Password
