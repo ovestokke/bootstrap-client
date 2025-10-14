@@ -69,6 +69,66 @@ Write-Host ""
 
 #endregion
 
+#region System Restore
+
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "System Restore Configuration" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
+
+# Check if System Restore is enabled
+$restoreStatus = Get-ComputerRestorePoint -ErrorAction SilentlyContinue
+$restoreEnabled = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" -Name "RPSessionInterval" -ErrorAction SilentlyContinue) -ne $null
+
+if (-not $restoreEnabled) {
+    Write-Host "System Restore is currently disabled" -ForegroundColor Yellow
+    Write-Host "Enabling System Restore on C: drive..." -ForegroundColor Cyan
+    
+    try {
+        # Enable System Restore on C: drive
+        Enable-ComputerRestore -Drive "C:\" -ErrorAction Stop
+        
+        # Set disk usage to 10% (reasonable default)
+        vssadmin Resize ShadowStorage /For=C: /On=C: /MaxSize=10% | Out-Null
+        
+        Write-Host "[OK] System Restore enabled on C: drive (10% max disk usage)" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "[FAIL] Failed to enable System Restore: $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
+else {
+    Write-Host "[OK] System Restore is already enabled" -ForegroundColor Green
+}
+
+# Create initial restore point before making changes
+Write-Host ""
+Write-Host "Creating restore point before system changes..." -ForegroundColor Cyan
+
+try {
+    # Check if a restore point was created in the last 24 hours
+    $recentRestorePoint = Get-ComputerRestorePoint | 
+        Where-Object { $_.CreationTime -gt (Get-Date).AddHours(-24) } | 
+        Select-Object -First 1
+    
+    if ($recentRestorePoint) {
+        Write-Host "[SKIP] Restore point already created in the last 24 hours" -ForegroundColor Yellow
+        Write-Host "  → Created: $($recentRestorePoint.CreationTime)" -ForegroundColor Gray
+    }
+    else {
+        Checkpoint-Computer -Description "Before Bootstrap Setup Script" -RestorePointType "MODIFY_SETTINGS" -ErrorAction Stop
+        Write-Host "[OK] Restore point created successfully" -ForegroundColor Green
+    }
+}
+catch {
+    Write-Host "[FAIL] Failed to create restore point: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Continuing with setup..." -ForegroundColor Yellow
+}
+
+Write-Host ""
+
+#endregion
+
 #region Drivers
 
 # Drivers for GIGABYTE B850 AORUS ELITE WIFI7 ICE
