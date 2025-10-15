@@ -161,6 +161,10 @@ else {
         }
         "3" {
             $repoUrl = Read-Host "Enter repository URL"
+            if ($repoUrl -notmatch '^(https?://|git@)[\w\-\.]+') {
+                Write-Host "[FAIL] Invalid URL format. Must start with https://, http://, or git@" -ForegroundColor Red
+                exit 1
+            }
         }
         default {
             Write-Host "[FAIL] Invalid choice" -ForegroundColor Red

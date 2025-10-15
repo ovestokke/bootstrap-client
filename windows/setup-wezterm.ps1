@@ -15,6 +15,12 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 #endregion
 
+# Start logging
+$logFile = Join-Path $PSScriptRoot "Setup-WezTerm-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').txt"
+Start-Transcript -Path $logFile
+Write-Host "Logging to: $logFile" -ForegroundColor Gray
+Write-Host ""
+
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "WezTerm Setup Script" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
@@ -55,6 +61,7 @@ Write-Host ""
 
 try {
     # Download Meslo Nerd Font
+    # NOTE: Update version periodically - check https://github.com/ryanoasis/nerd-fonts/releases
     $fontUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.zip"
     $fontZip = Join-Path $env:TEMP "Meslo.zip"
     $fontExtract = Join-Path $env:TEMP "MesloFonts"
@@ -92,7 +99,15 @@ try {
         }
     }
 
-    Write-Host "[OK] Installed $installed font files ($skipped already existed)" -ForegroundColor Green
+    if ($installed -eq 0 -and $skipped -gt 0) {
+        Write-Host "[OK] All $skipped font files already installed" -ForegroundColor Green
+    }
+    elseif ($installed -gt 0) {
+        Write-Host "[OK] Installed $installed new font files ($skipped already existed)" -ForegroundColor Green
+    }
+    else {
+        Write-Host "[FAIL] No font files found to install" -ForegroundColor Red
+    }
 
     # Cleanup
     Write-Host "Cleaning up temporary files..." -ForegroundColor Cyan
@@ -162,5 +177,9 @@ Write-Host "  2. The Meslo Nerd Font should be automatically detected" -Foregrou
 Write-Host "  3. Configure your .wezterm.lua file if needed" -ForegroundColor White
 Write-Host "  4. Reference: https://www.josean.com/posts/how-to-setup-wezterm-terminal" -ForegroundColor White
 Write-Host ""
+Write-Host "Log file: $logFile" -ForegroundColor Cyan
+Write-Host ""
+
+Stop-Transcript
 
 #endregion

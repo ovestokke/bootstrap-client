@@ -4,12 +4,19 @@
 # This script verifies that all packages in the installation list are available on winget
 #
 
+# Parameter for which list to verify
+param(
+    [Parameter(Mandatory=$false)]
+    [ValidateSet("Basic", "Full")]
+    [string]$ListType = "Full"
+)
+
 # Load applications list from file
-$appsListFile = Join-Path $PSScriptRoot "Apps-List.txt"
+$appsListFile = Join-Path $PSScriptRoot "Apps-List-$ListType.txt"
 
 if (-not (Test-Path $appsListFile)) {
-    Write-Host "[FAIL] Apps-List.txt not found at: $appsListFile" -ForegroundColor Red
-    Write-Host "Please ensure Apps-List.txt exists in the same directory as this script." -ForegroundColor Yellow
+    Write-Host "[FAIL] $appsListFile not found" -ForegroundColor Red
+    Write-Host "Available lists: Apps-List-Basic.txt, Apps-List-Full.txt" -ForegroundColor Yellow
     exit 1
 }
 

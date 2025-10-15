@@ -122,6 +122,7 @@ if [ "$SKIP_FONT" = false ]; then
         print_warning "Failed to install via Homebrew, trying manual installation..."
         
         # Fallback: Manual installation
+        # NOTE: Update version periodically - check https://github.com/ryanoasis/nerd-fonts/releases
         FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.zip"
         FONT_ZIP="/tmp/Meslo.zip"
         FONT_DIR="$HOME/Library/Fonts"

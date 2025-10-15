@@ -32,6 +32,12 @@ function Write-Info {
 
 #endregion
 
+# Start logging
+$logFile = Join-Path $PSScriptRoot "Setup-GitHubKeys-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').txt"
+Start-Transcript -Path $logFile
+Write-Host "Logging to: $logFile" -ForegroundColor Gray
+Write-Host ""
+
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "GitHub SSH & GPG Keys Setup" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
@@ -92,33 +98,29 @@ Write-Host "User Information" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Try to get existing git config
-$gitName = git config --global user.name 2>$null
-$gitEmail = git config --global user.email 2>$null
+# Get user information (prompt once, use immediately)
+$existingName = git config --global user.name 2>$null
+$existingEmail = git config --global user.email 2>$null
 
-if ([string]::IsNullOrWhiteSpace($gitName)) {
+if ([string]::IsNullOrWhiteSpace($existingName)) {
     $gitName = Read-Host "Enter your full name (for Git)"
 }
 else {
-    Write-Info "Using existing Git name: $gitName"
+    Write-Info "Current Git name: $existingName"
     $newName = Read-Host "Press Enter to use this name, or type a new one"
-    if (-not [string]::IsNullOrWhiteSpace($newName)) {
-        $gitName = $newName
-    }
+    $gitName = if ([string]::IsNullOrWhiteSpace($newName)) { $existingName } else { $newName }
 }
 
-if ([string]::IsNullOrWhiteSpace($gitEmail)) {
+if ([string]::IsNullOrWhiteSpace($existingEmail)) {
     $gitEmail = Read-Host "Enter your email (for Git & GitHub)"
 }
 else {
-    Write-Info "Using existing Git email: $gitEmail"
+    Write-Info "Current Git email: $existingEmail"
     $newEmail = Read-Host "Press Enter to use this email, or type a new one"
-    if (-not [string]::IsNullOrWhiteSpace($newEmail)) {
-        $gitEmail = $newEmail
-    }
+    $gitEmail = if ([string]::IsNullOrWhiteSpace($newEmail)) { $existingEmail } else { $newEmail }
 }
 
-# Configure git
+# Configure git immediately with user-confirmed values
 Write-Info "Configuring Git..."
 git config --global user.name "$gitName"
 git config --global user.email "$gitEmail"
@@ -218,7 +220,9 @@ if (-not $skipGpg) {
     
     # Create batch file for unattended GPG key generation
     $gpgBatch = Join-Path $env:TEMP "gpg-batch.txt"
-    @"
+    
+    try {
+        @"
 %no-protection
 Key-Type: RSA
 Key-Length: 4096
@@ -228,26 +232,29 @@ Name-Real: $gitName
 Name-Email: $gitEmail
 Expire-Date: 0
 "@ | Out-File -FilePath $gpgBatch -Encoding ASCII
-    
-    gpg --batch --generate-key $gpgBatch
-    
-    if ($LASTEXITCODE -eq 0) {
-        Write-Success "GPG key generated"
         
-        # Get the new key ID
-        $gpgOutput = gpg --list-secret-keys --keyid-format=long $gitEmail 2>$null | Select-String "sec"
-        if ($gpgOutput) {
-            $gpgKeyId = ($gpgOutput -split "/")[1] -split " " | Select-Object -First 1
+        gpg --batch --generate-key $gpgBatch
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Success "GPG key generated"
+            
+            # Get the new key ID
+            $gpgOutput = gpg --list-secret-keys --keyid-format=long $gitEmail 2>$null | Select-String "sec"
+            if ($gpgOutput) {
+                $gpgKeyId = ($gpgOutput -split "/")[1] -split " " | Select-Object -First 1
+            }
+            
+            Write-Success "GPG Key ID: $gpgKeyId"
         }
-        
-        Write-Success "GPG Key ID: $gpgKeyId"
+        else {
+            Write-Fail "Failed to generate GPG key"
+            exit 1
+        }
     }
-    else {
-        Write-Fail "Failed to generate GPG key"
-        exit 1
+    finally {
+        # Always cleanup temp file
+        Remove-Item $gpgBatch -Force -ErrorAction SilentlyContinue
     }
-    
-    Remove-Item $gpgBatch -Force -ErrorAction SilentlyContinue
 }
 
 # Configure Git to use GPG key
@@ -393,5 +400,9 @@ Write-Host "GitHub Settings:" -ForegroundColor Cyan
 Write-Host "  - SSH keys: https://github.com/settings/keys"
 Write-Host "  - GPG keys: https://github.com/settings/gpg/new"
 Write-Host ""
+Write-Host "Log file: $logFile" -ForegroundColor Cyan
+Write-Host ""
+
+Stop-Transcript
 
 #endregion

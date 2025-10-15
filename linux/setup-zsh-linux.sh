@@ -12,6 +12,12 @@
 
 set -e  # Exit on error
 
+# Check bash version (require 4.0+)
+if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
+    echo "Error: This script requires Bash 4.0 or later. Current version: $BASH_VERSION"
+    exit 1
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'

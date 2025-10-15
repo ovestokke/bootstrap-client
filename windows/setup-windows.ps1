@@ -7,6 +7,12 @@
 
 #region Setup
 
+# Check PowerShell version
+if ($PSVersionTable.PSVersion -lt [Version]'5.1') {
+    Write-Error "This script requires PowerShell 5.1 or later. Current version: $($PSVersionTable.PSVersion)"
+    exit 1
+}
+
 # Check if running as Administrator
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Error "This script must be run as Administrator!"
@@ -39,12 +45,11 @@ Write-Host ""
 $changeName = Read-Host "Would you like to change the computer name? (Y/N)"
 
 if ($changeName -eq "Y" -or $changeName -eq "y") {
-    $defaultName = "Ares"
-    $newName = Read-Host "Enter new computer name (default: $defaultName)"
+    $newName = Read-Host "Enter new computer name"
 
     if ([string]::IsNullOrWhiteSpace($newName)) {
-        $newName = $defaultName
-        Write-Host "Using default name: $newName" -ForegroundColor Cyan
+        Write-Host "[SKIP] No name entered, keeping current name" -ForegroundColor Yellow
+        $newName = $currentName
     }
 
     if ($newName -and $newName -ne $currentName) {
@@ -378,7 +383,9 @@ Write-Host "  [2] Basic - Essential applications only (~15 apps)" -ForegroundCol
 Write-Host "  [3] Full - All applications (~60+ apps)" -ForegroundColor White
 Write-Host ""
 
-$installChoice = Read-Host "Enter your choice (1, 2, or 3)"
+do {
+    $installChoice = Read-Host "Enter your choice (1, 2, or 3)"
+} while ($installChoice -notmatch '^[123]$')
 
 if ($installChoice -eq "1") {
     Write-Host ""
@@ -484,12 +491,6 @@ elseif ($installChoice -eq "2" -or $installChoice -eq "3") {
     }
 
     Write-Host ""
-}
-else {
-    Write-Host ""
-    Write-Host "[FAIL] Invalid choice. Please run the script again and select 1, 2, or 3." -ForegroundColor Red
-    Stop-Transcript
-    exit 1
 }
 
 #endregion

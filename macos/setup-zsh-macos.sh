@@ -12,6 +12,12 @@
 
 set -e  # Exit on error
 
+# Check bash version (require 3.2+ for macOS compatibility)
+if [ "${BASH_VERSINFO:-0}" -lt 3 ]; then
+    echo "Error: This script requires Bash 3.2 or later. Current version: $BASH_VERSION"
+    exit 1
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'

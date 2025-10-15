@@ -180,6 +180,10 @@ else
             ;;
         3)
             read -p "Enter repository URL: " REPO_URL
+            if [[ ! "$REPO_URL" =~ ^(https?://|git@)[a-zA-Z0-9\.\-]+ ]]; then
+                print_error "Invalid URL format. Must start with https://, http://, or git@"
+                exit 1
+            fi
             ;;
         *)
             print_error "Invalid choice"
