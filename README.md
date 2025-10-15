@@ -461,6 +461,69 @@ Based on: [Josean's WezTerm Terminal Setup Guide](https://www.josean.com/posts/h
 
 ## 🧩 Complementary Tools
 
+### Chezmoi - Dotfile Manager (Recommended)
+A cross-platform dotfile manager that works seamlessly with this bootstrap setup. Use it to manage your configuration files across machines.
+
+**Repository:** [github.com/ovestokke/dotfiles](https://github.com/ovestokke/dotfiles)
+
+**Why use chezmoi:**
+- Manage dotfiles across multiple machines (Windows, macOS, Linux)
+- Template support for machine-specific configs
+- Encryption for sensitive data (API keys, tokens)
+- Track changes in git with easy sync
+- Works perfectly after running bootstrap scripts
+
+**What's included in ovestokke/dotfiles:**
+- WezTerm configuration with Catppuccin Mocha theme
+- AeroSpace tiling window manager config (macOS)
+- Zsh configuration with Oh My Zsh and Powerlevel10k
+- Modern CLI tools setup (eza, zoxide, plugins)
+
+Quick start (one-line install):
+```bash
+# Automatic install + apply dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ovestokke
+```
+
+Or install manually:
+```bash
+# Install chezmoi first
+brew install chezmoi          # macOS
+winget install twpayne.chezmoi # Windows
+sudo apt install chezmoi       # Linux
+
+# Initialize with ovestokke/dotfiles repo
+chezmoi init https://github.com/ovestokke/dotfiles.git
+
+# Apply dotfiles
+chezmoi apply
+```
+
+Managing dotfiles:
+```bash
+# Edit a dotfile
+chezmoi edit ~/.zshrc
+
+# View what would change
+chezmoi diff
+
+# Apply changes
+chezmoi apply
+
+# Add new dotfile
+chezmoi add ~/.newfile
+```
+
+See the [Chezmoi Quick Start Guide](https://www.chezmoi.io/quick-start/) for detailed setup.
+
+**Integration with this repo:**
+1. Run bootstrap scripts first (this repo) to set up base system
+2. Use chezmoi to apply and sync your personal configs (.zshrc, .wezterm.lua, .aerospace.toml)
+3. Keep both in sync across all your machines
+4. Fork ovestokke/dotfiles to customize for your own setup
+
+---
+
 ### Chris Titus Tech WinUtil (Optional)
 A popular community tool for additional Windows cleanup and tweaking. Use it AFTER running `Setup-Windows.ps1` if you want to:
 - Apply extra GUI‑driven privacy / services tweaks
