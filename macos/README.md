@@ -163,6 +163,30 @@ chcd       # chezmoi cd
 
 ---
 
+## 🔄 Running on Existing Setup
+
+**Safe to re-run anytime!** Scripts are idempotent:
+
+- ✅ Detects installed packages and skips them
+- ✅ Prompts before making changes
+- ✅ Updates Homebrew but doesn't reinstall packages
+- ✅ chezmoi only applies differences
+
+**What happens:**
+- `setup-essentials.sh` → Checks Homebrew/Git/chezmoi, runs `brew update`
+- `setup-packages.sh` → Prints "already installed" for existing packages, installs missing ones
+- `chezmoi apply` → Only applies changed dotfiles (no-op if already synced)
+
+**Useful for:**
+- Installing missed packages
+- Verifying your setup
+- Setting up additional machines
+- Quick health check
+
+**Time:** ~30 seconds (just verification)
+
+---
+
 ## 🔄 Updating
 
 ### Update Packages
