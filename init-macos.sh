@@ -215,54 +215,77 @@ print_header "Launch Setup Scripts"
 cd "$CLONE_LOCATION/macos"
 
 echo ""
-print_info "Available setup scripts:"
-echo "  1. Setup-WezTerm.sh      - Install and configure WezTerm terminal"
-echo "  2. Setup-Zsh-macOS.sh    - Configure Zsh with Powerlevel10k and tools"
-echo "  3. Setup-GitHubKeys.sh   - Generate and upload SSH/GPG keys to GitHub"
-echo "  4. Run all scripts in order"
+print_info "Setup workflow:"
+echo "  1. setup-essentials.sh   - Install Homebrew, Git, chezmoi (init dotfiles)"
+echo "  2. setup-packages.sh     - Install all tools (WezTerm, Neovim, Zsh plugins, etc.)"
+echo "  3. chezmoi apply         - Apply your dotfiles configuration"
+echo "  4. Run complete setup (1→2→3 automated)"
 echo ""
 
 read -p "What would you like to do? (1-4 or skip): " SCRIPT_CHOICE
 
 case $SCRIPT_CHOICE in
     1)
-        print_info "Launching Setup-WezTerm.sh..."
+        print_info "Launching setup-essentials.sh..."
         echo ""
-        bash Setup-WezTerm.sh
+        bash setup-essentials.sh
         ;;
     2)
-        print_info "Launching Setup-Zsh-macOS.sh..."
+        print_info "Launching setup-packages.sh..."
         echo ""
-        bash Setup-Zsh-macOS.sh
+        bash setup-packages.sh
         ;;
     3)
-        print_info "Launching Setup-GitHubKeys.sh..."
+        print_info "Applying dotfiles with chezmoi..."
         echo ""
-        bash Setup-GitHubKeys.sh
+        if command -v chezmoi &> /dev/null; then
+            chezmoi apply
+            print_success "Dotfiles applied!"
+        else
+            print_error "chezmoi not found. Run setup-essentials.sh first."
+        fi
         ;;
     4)
-        print_info "Running all setup scripts..."
+        print_info "Running complete setup..."
         echo ""
         
-        print_header "Step 1: WezTerm Setup"
-        bash Setup-WezTerm.sh
+        print_header "Step 1: Essentials (Homebrew + Git + chezmoi)"
+        bash setup-essentials.sh
         
-        print_header "Step 2: Zsh Setup"
-        bash Setup-Zsh-macOS.sh
+        print_header "Step 2: Packages (all tools)"
+        bash setup-packages.sh
         
-        print_header "Step 3: GitHub Keys Setup"
-        bash Setup-GitHubKeys.sh
+        print_header "Step 3: Apply Dotfiles"
+        if command -v chezmoi &> /dev/null; then
+            if [[ -d "$HOME/.local/share/chezmoi" ]]; then
+                print_info "Applying dotfiles configuration..."
+                chezmoi apply
+                print_success "Dotfiles applied!"
+            else
+                print_warning "chezmoi not initialized"
+                print_info "Run 'chezmoi init --apply https://github.com/yourusername/dotfiles.git'"
+            fi
+        else
+            print_warning "chezmoi not found"
+        fi
         
-        print_header "All setup scripts completed!"
+        print_header "Setup Complete!"
+        echo ""
+        print_success "Your macOS development environment is ready!"
+        echo ""
+        print_info "Next steps:"
+        echo "  1. Launch WezTerm"
+        echo "  2. Run: ${YELLOW}p10k configure${NC} (first time only)"
+        echo "  3. Start coding! 🚀"
         ;;
     *)
         print_warning "Skipping script execution"
         echo ""
-        print_info "To run setup scripts manually:"
+        print_info "To run setup manually:"
         echo "  cd $CLONE_LOCATION/macos"
-        echo "  bash Setup-WezTerm.sh"
-        echo "  bash Setup-Zsh-macOS.sh"
-        echo "  bash Setup-GitHubKeys.sh"
+        echo "  bash setup-essentials.sh    # Homebrew + Git + chezmoi"
+        echo "  bash setup-packages.sh      # Install all tools"
+        echo "  chezmoi apply               # Apply your dotfiles"
         ;;
 esac
 

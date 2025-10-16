@@ -1,142 +1,293 @@
 # macOS Setup Scripts
 
-Bash scripts for macOS development environment setup.
+**Minimalist approach:** Scripts install packages only. Configuration is managed by chezmoi.
 
-## Planned: 
-https://github.com/nikitabobko/AeroSpace
-## Scripts
+---
 
-### Setup-Zsh-macOS.sh
-**Main Zsh setup script** - Homebrew-based approach
+## 🎯 Philosophy
 
-- Installs Powerlevel10k theme via Homebrew
-- Installs zsh-autosuggestions via Homebrew
-- Installs zsh-syntax-highlighting via Homebrew
-- Configures history search with arrow keys
-- Installs eza (better ls) via Homebrew
-- Installs zoxide (better cd) via Homebrew
-- Sources plugins directly in `.zshrc` (no Oh My Zsh dependency)
+This setup separates concerns cleanly:
+- **Scripts** → Install tools (Homebrew, WezTerm, Neovim, etc.)
+- **chezmoi** → Manage ALL configuration files
+
+Your dotfiles repo (via chezmoi) controls:
+- `.wezterm.lua` - Terminal config
+- `.zshrc` - Shell config with Oh My Zsh, P10k, aliases
+- `~/.config/nvim/` - Neovim/LazyVim config
+- `.gitconfig` - Git configuration
+- Any other dotfiles
+
+---
+
+## 📋 Scripts
+
+### setup-essentials.sh
+**Foundation setup** - Run this first!
+
+**What it installs:**
+- Homebrew (macOS package manager)
+- Git (version control)
+- chezmoi (dotfile manager)
+- Basic utilities (curl, wget)
+
+**What it does:**
+- Prompts to initialize chezmoi with your dotfiles repo
+- Interactive setup: `chezmoi init --apply https://github.com/yourusername/dotfiles.git`
 
 **Prerequisites:**
 - macOS 11+ (Big Sur or later)
-- Homebrew installed: https://brew.sh/
-- Zsh installed (default on macOS)
+- Internet connection
 
 **Usage:**
 ```bash
-bash macos/Setup-Zsh-macOS.sh
+bash macos/setup-essentials.sh
 ```
 
-**After running:**
-```bash
-# Restart terminal or source config
-source ~/.zshrc
+**Time:** 3-5 minutes
 
-# Run Powerlevel10k configuration wizard
-p10k configure
+---
+
+### setup-packages.sh
+**Package installation** - Installs all development tools
+
+**What it installs:**
+- **Terminal:** WezTerm, Meslo Nerd Font
+- **Shell:** Oh My Zsh, Powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting
+- **CLI Tools:** eza, zoxide, fzf, ripgrep, fd
+- **Development:** Neovim (>= 0.11.2), lazygit
+- **Git Tools:** GitHub CLI (gh), GPG
+
+**What it does NOT do:**
+- ❌ No configuration file writing
+- ❌ No `.zshrc` modifications
+- ❌ No `.wezterm.lua` copying
+- ❌ No Neovim config setup
+
+**Prerequisites:**
+- Homebrew installed (run setup-essentials.sh first)
+
+**Usage:**
+```bash
+bash macos/setup-packages.sh
 ```
 
 **Time:** 10-15 minutes
 
 ---
 
-### Setup-WezTerm.sh
-Installs and configures WezTerm terminal emulator.
+## 🚀 Recommended Workflow
 
-- Installs WezTerm via Homebrew
-- Installs Meslo Nerd Font via `homebrew/cask-fonts`
-- Copies `.wezterm.lua` configuration from repository root
-- Fallback to manual font installation if Homebrew fails
-
-**Prerequisites:**
-- Homebrew installed
-
-**Usage:**
+### Quick Start (One Command)
 ```bash
-bash macos/Setup-WezTerm.sh
+curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/init-macos.sh | bash
 ```
 
-**Time:** 5-10 minutes
+Then choose **Option 4: Run complete setup**
 
----
-
-### Setup-GitHubKeys.sh
-Generates and uploads SSH/GPG keys to GitHub.
-
-- Generates SSH ed25519 key
-- Generates GPG 4096-bit RSA key
-- Configures Git to auto-sign commits
-- Uploads keys to GitHub via `gh` CLI
-
-**Prerequisites:**
-- Git installed
-- GitHub CLI (`gh`) installed: `brew install gh`
-- GPG installed: `brew install gnupg`
-
-**Usage:**
+### Manual Setup
 ```bash
-bash macos/Setup-GitHubKeys.sh
+cd macos
+
+# Step 1: Install Homebrew, Git, chezmoi (initialize with your dotfiles)
+bash setup-essentials.sh
+
+# Step 2: Install all packages (WezTerm, Neovim, Zsh plugins, etc.)
+bash setup-packages.sh
+
+# Step 3: Apply your dotfiles
+chezmoi apply
+
+# Done! Launch WezTerm and run p10k configure
 ```
 
-**Time:** 10 minutes
+**Total time:** 15-20 minutes
 
 ---
 
-## Recommended Order
+## 📦 What You Get
 
-Run scripts in this order for a complete macOS development setup:
+After complete setup:
 
-1. Install Homebrew (if not already installed)
-2. `Setup-WezTerm.sh` - Terminal setup
-3. `Setup-Zsh-macOS.sh` - Zsh configuration with Powerlevel10k
-4. `Setup-GitHubKeys.sh` - GitHub authentication
+✅ **Package Manager** - Homebrew  
+✅ **Version Control** - Git  
+✅ **Dotfile Manager** - chezmoi (with your dotfiles applied)  
+✅ **Terminal** - WezTerm with Nerd fonts  
+✅ **Shell Framework** - Oh My Zsh + Powerlevel10k  
+✅ **Shell Plugins** - Autosuggestions + syntax highlighting  
+✅ **Modern CLI** - eza, zoxide, fzf, ripgrep, fd  
+✅ **Editor** - Neovim + LazyVim (via your dotfiles)  
+✅ **Git Tools** - GitHub CLI + GPG  
 
-**Total time:** 30-45 minutes
+**All configured via your chezmoi dotfiles!**
 
 ---
 
-## Updating Tools
+## 🔄 Configuration Management
 
-All tools installed via Homebrew can be updated with:
+### Your Dotfiles (chezmoi)
 
 ```bash
+# Check status
+chezmoi status
+
+# View diff before applying
+chezmoi diff
+
+# Apply dotfiles
+chezmoi apply
+
+# Edit a dotfile
+chezmoi edit ~/.zshrc
+
+# Edit and apply immediately
+chezmoi edit --apply ~/.wezterm.lua
+
+# Update from remote
+chezmoi update
+
+# Go to source directory
+chezmoi cd
+```
+
+### Quick Aliases (if in your .zshrc)
+```bash
+ch         # chezmoi
+chst       # chezmoi status
+chd        # chezmoi diff
+che        # chezmoi edit
+chea       # chezmoi edit --apply
+chap       # chezmoi apply
+chup       # chezmoi update
+chcd       # chezmoi cd
+```
+
+---
+
+## 🔄 Updating
+
+### Update Packages
+```bash
+# Update Homebrew itself
 brew update
+
+# Upgrade all installed packages
 brew upgrade
+
+# Upgrade specific package
+brew upgrade neovim
 ```
 
-Specific updates:
+### Update Oh My Zsh
 ```bash
-# Update Zsh components
-brew upgrade powerlevel10k zsh-autosuggestions zsh-syntax-highlighting
+# In your terminal (if set up in dotfiles)
+omz update
+```
 
-# Update CLI tools
-brew upgrade eza zoxide
+### Update Neovim Plugins
+```bash
+nvim
+:Lazy sync
+```
 
-# Update WezTerm
-brew upgrade --cask wezterm
+### Update Dotfiles
+```bash
+# Pull latest changes and apply
+chezmoi update
 ```
 
 ---
 
-## Differences from Linux/WSL Setup
+## 💡 Key Differences from Old Scripts
 
-| Feature | macOS | Linux/WSL |
-|---------|-------|-----------|
-| Package Manager | Homebrew | apt + git clone |
-| Framework | None (direct sourcing) | Oh My Zsh |
-| P10k Install | `brew install` | `git clone` |
-| Plugins | Source in `.zshrc` | Oh My Zsh plugins |
-| Font Install | `brew install --cask` | Manual to `~/.local/share/fonts` |
-| Updates | `brew upgrade` | `git pull` + `apt upgrade` |
-
-Both approaches result in the same functionality, just using platform-appropriate tools.
+| Old Approach | New Approach |
+|--------------|--------------|
+| Scripts write to `.zshrc` | chezmoi manages `.zshrc` |
+| Scripts copy `.wezterm.lua` | chezmoi manages `.wezterm.lua` |
+| Scripts create nvim config | chezmoi manages `~/.config/nvim/` |
+| 5 separate scripts | 2 install scripts + chezmoi |
+| Config scattered | Single source of truth (dotfiles) |
 
 ---
 
-## See Also
+## 🆘 Troubleshooting
 
-- `../SETUP-GUIDE.md` - Complete setup guide
-- `../Setup-Zsh-README.md` - Detailed Zsh setup documentation
-- `../.wezterm.lua` - WezTerm configuration file
-- `../windows/` - Windows scripts
-- `../linux/` - Linux/WSL scripts
+### chezmoi Not Initialized
+```bash
+# Initialize with your dotfiles repo
+chezmoi init --apply https://github.com/yourusername/dotfiles.git
+```
+
+### Dotfiles Not Applied
+```bash
+# Check what would change
+chezmoi diff
+
+# Apply dotfiles
+chezmoi apply
+
+# Or do a dry run first
+chezmoi apply --dry-run --verbose
+```
+
+### Oh My Zsh Not Installed
+```bash
+# Install manually (if setup-packages.sh failed)
+RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+### Powerlevel10k Not Showing
+```bash
+# Run configuration wizard
+p10k configure
+
+# Or check if sourced in your .zshrc
+grep "powerlevel10k" ~/.zshrc
+```
+
+### Neovim Version Too Old
+```bash
+# Upgrade Neovim
+brew upgrade neovim
+
+# Verify version (need >= 0.11.2)
+nvim --version
+```
+
+---
+
+## 📚 Documentation
+
+- **Main README**: ../README.md
+- **Quick Reference**: ../QUICK-REFERENCE.md (commands, tips)
+- **Contributing**: ../CONTRIBUTING.md (code style)
+- **LazyVim Guide**: ../Setup-LazyVim-README.md
+- **Zsh Guide**: ../Setup-Zsh-README.md
+
+---
+
+## 🔗 Reference Links
+
+- **Homebrew**: https://brew.sh/
+- **chezmoi**: https://www.chezmoi.io/
+- **WezTerm**: https://wezfurlong.org/wezterm/
+- **Oh My Zsh**: https://ohmyz.sh/
+- **Powerlevel10k**: https://github.com/romkatv/powerlevel10k
+- **LazyVim**: https://www.lazyvim.org/
+
+---
+
+## 💭 Philosophy
+
+**Why separate installation from configuration?**
+
+1. **Single source of truth** - Your dotfiles repo controls all configs
+2. **Portability** - Same dotfiles work on multiple machines
+3. **Version control** - Track config changes in git
+4. **Flexibility** - Change configs without re-running scripts
+5. **Simplicity** - Scripts just install, chezmoi does the rest
+
+**The bootstrap scripts get you 80% there. Your dotfiles make it 100% yours.**
+
+---
+
+**Ready for a clean macOS dev setup! 🚀**
