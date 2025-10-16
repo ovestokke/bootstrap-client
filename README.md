@@ -30,13 +30,17 @@ curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/i
 **The init script will:**
 1. Install Git (winget/Homebrew/apt)
 2. Install Homebrew (macOS only, if needed)
-3. Clone this repository to your chosen location
+3. **Smart repository handling:**
+   - If run from the repo: Offers to pull latest changes
+   - If not in repo: Clones to your chosen location
 4. Present setup options:
    - **Windows**: System setup with 3 app modes (Skip/Basic/Full)
    - **macOS**: Essentials, packages, or complete setup
    - **Linux**: Shell setup and GitHub keys
 
 **No manual git clone needed. No prerequisites. Just run the command.**
+
+**Tip:** If you already cloned the repo, run `bash init-macos.sh` from inside it to auto-detect and update.
 
 ---
 

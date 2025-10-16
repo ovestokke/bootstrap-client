@@ -122,85 +122,132 @@ echo ""
 
 print_header "Repository Setup"
 
-# Ask for clone location
-DEFAULT_LOCATION="$HOME/bootstrap-client"
-echo ""
-print_info "Where should the repository be cloned?"
-read -p "Location (default: $DEFAULT_LOCATION): " CLONE_LOCATION
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ -z "$CLONE_LOCATION" ]]; then
-    CLONE_LOCATION="$DEFAULT_LOCATION"
-fi
-
-print_info "Clone location: $CLONE_LOCATION"
-echo ""
-
-# Check if directory already exists
-if [[ -d "$CLONE_LOCATION" ]]; then
-    print_warning "Directory already exists: $CLONE_LOCATION"
+# Check if we're already in a git repository
+if [[ -d "$SCRIPT_DIR/.git" ]]; then
+    print_success "Running from repository: $SCRIPT_DIR"
     
-    # Check if it's a git repository
-    if [[ -d "$CLONE_LOCATION/.git" ]]; then
-        print_success "Directory is a git repository"
+    # Check if it's the bootstrap-client repo
+    REPO_REMOTE=$(git -C "$SCRIPT_DIR" remote get-url origin 2>/dev/null || echo "")
+    if [[ "$REPO_REMOTE" == *"bootstrap-client"* ]]; then
+        print_success "Confirmed: bootstrap-client repository"
         
-        read -p "Update repository? (y/N): " -n 1 -r
+        echo ""
+        read -p "Pull latest changes? (Y/n): " -n 1 -r
         echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            print_info "Updating repository..."
-            cd "$CLONE_LOCATION"
-            git pull
-            print_success "Repository updated"
+        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+            print_info "Pulling latest changes..."
+            cd "$SCRIPT_DIR"
+            if git pull; then
+                print_success "Repository updated"
+            else
+                print_warning "Git pull failed (may have local changes)"
+            fi
+        else
+            print_info "Skipping git pull"
         fi
+        
+        CLONE_LOCATION="$SCRIPT_DIR"
     else
-        print_error "Directory exists but is not a git repository"
-        print_warning "Please remove the directory or choose a different location"
-        exit 1
+        print_warning "Current directory is a git repo, but not bootstrap-client"
+        print_info "Remote: $REPO_REMOTE"
+        echo ""
+        
+        # Fall back to asking for clone location
+        DEFAULT_LOCATION="$HOME/bootstrap-client"
+        print_info "Where should the repository be cloned?"
+        read -p "Location (default: $DEFAULT_LOCATION): " CLONE_LOCATION
+        
+        if [[ -z "$CLONE_LOCATION" ]]; then
+            CLONE_LOCATION="$DEFAULT_LOCATION"
+        fi
     fi
 else
+    # Not in a git repo, ask for clone location
+    DEFAULT_LOCATION="$HOME/bootstrap-client"
     echo ""
-    print_info "Repository URL options:"
-    echo "  [1] HTTPS (default): https://github.com/ovestokke/bootstrap-client.git"
-    echo "  [2] SSH: git@github.com:ovestokke/bootstrap-client.git"
-    echo "  [3] Custom URL (your fork or private repo)"
-    echo ""
+    print_info "Where should the repository be cloned?"
+    read -p "Location (default: $DEFAULT_LOCATION): " CLONE_LOCATION
     
-    read -p "Choose clone method (1, 2, or 3, default: 1): " URL_CHOICE
-    
-    # Default to HTTPS if empty
-    if [[ -z "$URL_CHOICE" ]]; then
-        URL_CHOICE=1
+    if [[ -z "$CLONE_LOCATION" ]]; then
+        CLONE_LOCATION="$DEFAULT_LOCATION"
     fi
+fi
+
+# If CLONE_LOCATION is not set (we're in the repo), skip the rest
+if [[ "$CLONE_LOCATION" != "$SCRIPT_DIR" ]]; then
+    print_info "Clone location: $CLONE_LOCATION"
+    echo ""
     
-    case $URL_CHOICE in
-        1)
-            REPO_URL="https://github.com/ovestokke/bootstrap-client.git"
-            ;;
-        2)
-            REPO_URL="git@github.com:ovestokke/bootstrap-client.git"
-            ;;
-        3)
-            read -p "Enter repository URL: " REPO_URL
-            if [[ ! "$REPO_URL" =~ ^(https?://|git@)[a-zA-Z0-9\.\-]+ ]]; then
-                print_error "Invalid URL format. Must start with https://, http://, or git@"
-                exit 1
+    # Check if directory already exists
+    if [[ -d "$CLONE_LOCATION" ]]; then
+        print_warning "Directory already exists: $CLONE_LOCATION"
+        
+        # Check if it's a git repository
+        if [[ -d "$CLONE_LOCATION/.git" ]]; then
+            print_success "Directory is a git repository"
+            
+            read -p "Update repository? (y/N): " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                print_info "Updating repository..."
+                cd "$CLONE_LOCATION"
+                git pull
+                print_success "Repository updated"
             fi
-            ;;
-        *)
-            print_error "Invalid choice"
+        else
+            print_error "Directory exists but is not a git repository"
+            print_warning "Please remove the directory or choose a different location"
             exit 1
-            ;;
-    esac
-    
-    echo ""
-    print_info "Cloning repository from: $REPO_URL"
-    print_info "To: $CLONE_LOCATION"
-    echo ""
-    
-    if git clone "$REPO_URL" "$CLONE_LOCATION"; then
-        print_success "Repository cloned successfully"
+        fi
     else
-        print_error "Git clone failed"
-        exit 1
+        echo ""
+        print_info "Repository URL options:"
+        echo "  [1] HTTPS (default): https://github.com/ovestokke/bootstrap-client.git"
+        echo "  [2] SSH: git@github.com:ovestokke/bootstrap-client.git"
+        echo "  [3] Custom URL (your fork or private repo)"
+        echo ""
+        
+        read -p "Choose clone method (1, 2, or 3, default: 1): " URL_CHOICE
+        
+        # Default to HTTPS if empty
+        if [[ -z "$URL_CHOICE" ]]; then
+            URL_CHOICE=1
+        fi
+        
+        case $URL_CHOICE in
+            1)
+                REPO_URL="https://github.com/ovestokke/bootstrap-client.git"
+                ;;
+            2)
+                REPO_URL="git@github.com:ovestokke/bootstrap-client.git"
+                ;;
+            3)
+                read -p "Enter repository URL: " REPO_URL
+                if [[ ! "$REPO_URL" =~ ^(https?://|git@)[a-zA-Z0-9\.\-]+ ]]; then
+                    print_error "Invalid URL format. Must start with https://, http://, or git@"
+                    exit 1
+                fi
+                ;;
+            *)
+                print_error "Invalid choice"
+                exit 1
+                ;;
+        esac
+        
+        echo ""
+        print_info "Cloning repository from: $REPO_URL"
+        print_info "To: $CLONE_LOCATION"
+        echo ""
+        
+        if git clone "$REPO_URL" "$CLONE_LOCATION"; then
+            print_success "Repository cloned successfully"
+        else
+            print_error "Git clone failed"
+            exit 1
+        fi
     fi
 fi
 
