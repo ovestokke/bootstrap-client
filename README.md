@@ -64,32 +64,66 @@ Set-ExecutionPolicy Unrestricted -Force
 .\Setup-WezTerm.ps1      # Terminal setup (5 min)
 .\Setup-Zsh-Windows.ps1  # Zsh + tools in WSL (10 min)
 .\Setup-GitHubKeys.ps1   # SSH/GPG keys (5-10 min)
+.\Setup-Komorebi.ps1     # Tiling window manager (10 min)
 ```
 </details>
 
 <details>
-<summary><b>macOS Scripts</b></summary>
+<summary><b>Tiling Window Managers</b></summary>
 
-```bash
-cd /path/to/bootstrap-client/macos
-
-# Run scripts individually
-bash Setup-WezTerm.sh     # Terminal setup (5-10 min)
-bash Setup-Zsh-macOS.sh   # Zsh + tools (10-15 min)
-bash Setup-GitHubKeys.sh  # SSH/GPG keys (10 min)
+**Windows - Komorebi** (`$env:USERPROFILE\komorebi.json`):
+```json
+{
+  "app_specific_configuration_path": "applications.yaml",
+  "window_hiding_behaviour": "Cloak",
+  "cross_monitor_move_behaviour": "Swap",
+  "default_workspace_padding": 10,
+  "default_container_padding": 10
+}
 ```
-</details>
 
-<details>
-<summary><b>Linux Scripts</b></summary>
+**Hotkeys** (`$env:USERPROFILE\.config\whkdrc`):
+```
+# Focus windows
+alt + shift + h : komorebic focus left
+alt + shift + j : komorebic focus down
+alt + shift + k : komorebic focus up
+alt + shift + l : komorebic focus right
 
+# Switch workspaces
+alt + shift + 1 : komorebic focus-workspace 0
+alt + shift + 2 : komorebic focus-workspace 1
+```
+
+**macOS - AeroSpace** (`~/.aerospace.toml`):
+```toml
+# Gaps
+[gaps]
+inner.horizontal = 8
+inner.vertical = 8
+
+# Keybindings
+[mode.main.binding]
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+```
+
+**Commands:**
 ```bash
-cd /path/to/bootstrap-client/linux
+# Komorebi (Windows)
+komorebic start --whkd              # Start window manager
+komorebic stop --whkd               # Stop window manager
+komorebic reload-configuration      # Reload config
 
-# Run scripts individually
-bash Setup-Zsh-Linux.sh   # Zsh + tools (15-20 min)
-bash Setup-GitHubKeys.sh  # SSH/GPG keys (10 min)
-bash Setup-WSL.sh         # Legacy WSL setup (deprecated)
+# AeroSpace (macOS)
+open -a AeroSpace                   # Start window manager
+aerospace reload-config             # Reload config
+aerospace list-windows              # Show all windows
 ```
 </details>
 
@@ -108,6 +142,7 @@ bootstrap-client/
 │   ├── Setup-WezTerm.ps1        # WezTerm terminal setup
 │   ├── Setup-Zsh-Windows.ps1    # Zsh setup (WSL wrapper)
 │   ├── Setup-GitHubKeys.ps1     # GitHub SSH/GPG keys
+│   ├── Setup-Komorebi.ps1       # Komorebi tiling window manager
 │   ├── Get-InstalledSoftware.ps1
 │   ├── Verify-WingetApps.ps1
 │   ├── Apps-List-Basic.txt      # Essential applications (~15 apps)
@@ -118,6 +153,7 @@ bootstrap-client/
 │   ├── Setup-Zsh-macOS.sh       # Zsh + P10k (Homebrew-based)
 │   ├── Setup-WezTerm.sh         # WezTerm terminal setup
 │   ├── Setup-GitHubKeys.sh      # GitHub SSH/GPG keys
+│   ├── Setup-AeroSpace.sh       # AeroSpace tiling window manager
 │   └── README.md
 │
 ├── linux/             # Linux/Ubuntu Bash scripts
@@ -208,6 +244,30 @@ See `windows/Apps-List-Basic.txt` and `windows/Apps-List-Full.txt` for complete 
 - ✓ **Verification**: Signed commits show "Verified" badge
 
 All future commits will be automatically signed and verified on GitHub.
+</details>
+
+<details open>
+<summary><b>Tiling Window Managers (Windows & macOS)</b></summary>
+
+### Windows: `Setup-Komorebi.ps1` (10 min)
+- ✓ **Komorebi**: i3-like tiling window manager for Windows
+- ✓ **whkd**: Windows hotkey daemon for keyboard shortcuts
+- ✓ **Default Config**: Sensible keybindings and layouts
+- ✓ **Workspace Management**: Multiple virtual workspaces
+- ✓ **i3-like Paradigm**: Vim-style navigation (h/j/k/l)
+
+### macOS: `Setup-AeroSpace.sh` (5 min)
+- ✓ **AeroSpace**: i3-like tiling window manager for macOS
+- ✓ **Integrated Hotkeys**: Built-in keyboard shortcut support
+- ✓ **No SIP Disable**: Works without disabling security features
+- ✓ **Default Config**: i3-inspired keybindings with Alt modifiers
+- ✓ **Fast Workspace Switching**: No animations, instant response
+
+**Common Features:**
+- Keyboard-driven workflow (Alt+h/j/k/l for navigation)
+- Virtual workspace management (Alt+1-9 to switch)
+- Tiling layouts (automatic window arrangement)
+- Text-based configuration files
 </details>
 
 ---

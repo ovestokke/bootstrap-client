@@ -35,6 +35,10 @@ Discord.Discord
 Flow-Launcher.Flow-Launcher
 Microsoft.PowerToys
 
+# Window Management
+LGUG2Z.komorebi                      # Tiling window manager for Windows
+LGUG2Z.whkd                          # Windows hotkey daemon (pairs with komorebi)
+
 # Media
 VideoLAN.VLC
 TIDALMusicAS.TIDAL
