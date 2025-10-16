@@ -12,17 +12,17 @@ Cross-platform automation scripts for Windows, macOS, and Linux that handle ever
 
 **Windows** (PowerShell as Administrator):
 ```powershell
-irm https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-Windows.ps1 | iex
+irm https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/init-windows.ps1 | iex
 ```
 
 **macOS**:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-macOS.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/init-macos.sh | bash
 ```
 
 **Linux/Ubuntu**:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/Init-Linux.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/init-linux.sh | bash
 ```
 
 ### What Happens Automatically
@@ -32,100 +32,11 @@ curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/I
 2. Install Homebrew (macOS only, if needed)
 3. Clone this repository to your chosen location
 4. Present setup options:
-   - **Windows**: Launch system setup with 3 app installation modes (Skip/Basic/Full)
-   - **macOS**: Choose to run WezTerm, Zsh, GitHub keys, or all
-   - **Linux**: Choose to run Zsh, GitHub keys, or both
+   - **Windows**: System setup with 3 app modes (Skip/Basic/Full)
+   - **macOS**: Essentials, packages, or complete setup
+   - **Linux**: Shell setup and GitHub keys
 
 **No manual git clone needed. No prerequisites. Just run the command.**
-
-### For Forks
-
-If you forked this repo, the init script will ask which URL to use:
-- Option 1: HTTPS (default) - `https://github.com/ovestokke/bootstrap-client.git`
-- Option 2: SSH - `git@github.com:ovestokke/bootstrap-client.git`
-- Option 3: Custom URL - Enter your fork's URL
-
----
-
-### 📦 Manual Setup (Advanced)
-
-If you already cloned the repo or want to run individual scripts:
-
-<details>
-<summary><b>Windows Scripts</b></summary>
-
-```powershell
-# Open PowerShell as Administrator
-cd C:\path\to\bootstrap-client\windows
-Set-ExecutionPolicy Unrestricted -Force
-
-# Run scripts individually
-.\Setup-Windows.ps1      # System setup + apps (30-45 min)
-.\Setup-WezTerm.ps1      # Terminal setup (5 min)
-.\Setup-Zsh-Windows.ps1  # Zsh + tools in WSL (10 min)
-.\Setup-GitHubKeys.ps1   # SSH/GPG keys (5-10 min)
-.\Setup-Komorebi.ps1     # Tiling window manager (10 min)
-```
-</details>
-
-<details>
-<summary><b>Tiling Window Managers</b></summary>
-
-**Windows - Komorebi** (`$env:USERPROFILE\komorebi.json`):
-```json
-{
-  "app_specific_configuration_path": "applications.yaml",
-  "window_hiding_behaviour": "Cloak",
-  "cross_monitor_move_behaviour": "Swap",
-  "default_workspace_padding": 10,
-  "default_container_padding": 10
-}
-```
-
-**Hotkeys** (`$env:USERPROFILE\.config\whkdrc`):
-```
-# Focus windows
-alt + shift + h : komorebic focus left
-alt + shift + j : komorebic focus down
-alt + shift + k : komorebic focus up
-alt + shift + l : komorebic focus right
-
-# Switch workspaces
-alt + shift + 1 : komorebic focus-workspace 0
-alt + shift + 2 : komorebic focus-workspace 1
-```
-
-**macOS - AeroSpace** (`~/.aerospace.toml`):
-```toml
-# Gaps
-[gaps]
-inner.horizontal = 8
-inner.vertical = 8
-
-# Keybindings
-[mode.main.binding]
-alt-h = 'focus left'
-alt-j = 'focus down'
-alt-k = 'focus up'
-alt-l = 'focus right'
-
-alt-1 = 'workspace 1'
-alt-2 = 'workspace 2'
-```
-
-**Commands:**
-```bash
-# Komorebi (Windows)
-komorebic start --whkd              # Start window manager
-komorebic stop --whkd               # Stop window manager
-komorebic reload-configuration      # Reload config
-
-# AeroSpace (macOS)
-open -a AeroSpace                   # Start window manager
-aerospace reload-config             # Reload config
-aerospace list-windows              # Show all windows
-```
-</details>
 
 ---
 
@@ -133,478 +44,202 @@ aerospace list-windows              # Show all windows
 
 ```
 bootstrap-client/
-├── Init-Windows.ps1   # 🚀 One-line Windows initialization
-├── Init-macOS.sh      # 🚀 One-line macOS initialization
-├── Init-Linux.sh      # 🚀 One-line Linux initialization
+├── init-windows.ps1   # 🚀 One-line Windows initialization
+├── init-macos.sh      # 🚀 One-line macOS initialization
+├── init-linux.sh      # 🚀 One-line Linux initialization
 │
 ├── windows/           # Windows PowerShell scripts
-│   ├── Setup-Windows.ps1        # Main Windows setup (bloatware, privacy, apps)
-│   ├── Setup-WezTerm.ps1        # WezTerm terminal setup
-│   ├── Setup-Zsh-Windows.ps1    # Zsh setup (WSL wrapper)
-│   ├── Setup-GitHubKeys.ps1     # GitHub SSH/GPG keys
-│   ├── Setup-Komorebi.ps1       # Komorebi tiling window manager
-│   ├── Get-InstalledSoftware.ps1
-│   ├── Verify-WingetApps.ps1
-│   ├── Apps-List-Basic.txt      # Essential applications (~15 apps)
-│   ├── Apps-List-Full.txt       # Complete applications (~60 apps)
+│   ├── Setup-Windows.ps1        # System setup (bloatware, privacy, apps)
+│   ├── Setup-WezTerm.ps1        # WezTerm terminal
+│   ├── Setup-Zsh-Windows.ps1    # Zsh in WSL
+│   ├── Setup-GitHubKeys.ps1     # SSH/GPG keys
+│   ├── Setup-PowerShell.ps1     # PowerShell profile
+│   ├── Setup-Komorebi.ps1       # Tiling WM (optional)
+│   ├── Apps-List-Basic.txt      # 15 essential apps
+│   ├── Apps-List-Full.txt       # 60+ complete apps
 │   └── README.md
 │
 ├── macos/             # macOS Bash scripts
-│   ├── Setup-Zsh-macOS.sh       # Zsh + P10k (Homebrew-based)
-│   ├── Setup-WezTerm.sh         # WezTerm terminal setup
-│   ├── Setup-GitHubKeys.sh      # GitHub SSH/GPG keys
-│   ├── Setup-AeroSpace.sh       # AeroSpace tiling window manager
+│   ├── setup-essentials.sh      # Homebrew + Git + chezmoi
+│   ├── setup-packages.sh        # All tools (WezTerm, Neovim, etc.)
 │   └── README.md
 │
 ├── linux/             # Linux/Ubuntu Bash scripts
-│   ├── Setup-Zsh-Linux.sh       # Zsh + P10k (Oh My Zsh-based)
-│   ├── Setup-GitHubKeys.sh      # GitHub SSH/GPG keys
-│   ├── Setup-WSL.sh             # Legacy WSL setup
+│   ├── Setup-Zsh-Linux.sh       # Zsh + P10k
+│   ├── Setup-GitHubKeys.sh      # SSH/GPG keys
 │   └── README.md
 │
 ├── .wezterm.lua       # WezTerm configuration
-├── SETUP-GUIDE.md     # Complete setup guide
-├── Setup-Zsh-README.md # Detailed Zsh documentation
-├── CLAUDE.md          # Technical documentation
-└── AGENTS.md          # Code style guidelines
+├── CONTRIBUTING.md    # Code style & architecture
+├── QUICK-REFERENCE.md # Commands, tips, troubleshooting
+├── Setup-LazyVim-README.md # LazyVim detailed guide
+└── Setup-Zsh-README.md # Zsh detailed guide
 ```
-
----
-
-## 📚 Documentation
-
-- **[SETUP-GUIDE.md](SETUP-GUIDE.md)** - Complete step-by-step setup guide
-- **[Setup-Zsh-README.md](Setup-Zsh-README.md)** - Detailed Zsh setup documentation
-- **[windows/README.md](windows/README.md)** - Windows scripts documentation
-- **[macos/README.md](macos/README.md)** - macOS scripts documentation
-- **[linux/README.md](linux/README.md)** - Linux scripts documentation
 
 ---
 
 ## 🎯 What Gets Installed
 
-<details open>
-<summary><b>Windows System Setup</b></summary>
+### macOS
+✅ **Foundation**: Homebrew, Git, chezmoi (dotfile manager)  
+✅ **Terminal**: WezTerm + Meslo Nerd Font  
+✅ **Shell**: Zsh + Oh My Zsh + Powerlevel10k  
+✅ **CLI Tools**: eza, zoxide, fzf, ripgrep, fd  
+✅ **Development**: Neovim, lazygit, GitHub CLI, GPG  
 
-### `Setup-Windows.ps1` (30-45 min)
-- ✓ **Debloat**: Removes Cortana, Office Hub, Feedback Hub, etc.
-- ✓ **Privacy**: Disables telemetry, web search in Start Menu
-- ✓ **UI/UX**: Shows file extensions and hidden files
-- ✓ **Developer Mode**: Enables development features
-- ✓ **WSL + Ubuntu**: Full installation (no launch required)
-- ✓ **Applications**: 3 installation modes
-  - **Skip** - System setup only, no apps
-  - **Basic** - 15 essential apps (browsers, dev tools, 1Password, Obsidian)
-  - **Full** - 60+ apps (everything + gaming, media, productivity)
-- ✓ **NVIDIA App**: Auto-downloads and installs latest version
+**Configuration**: Managed by chezmoi (your dotfiles)
 
-See `windows/Apps-List-Basic.txt` and `windows/Apps-List-Full.txt` for complete lists.
-</details>
+### Windows
+✅ **System**: Bloatware removal, privacy settings, Developer Mode  
+✅ **WSL**: Ubuntu distribution  
+✅ **Applications**: 3 modes - Skip/Basic (15 apps)/Full (60+ apps)  
+✅ **Terminal**: WezTerm + Nerd Font  
+✅ **Shell**: Zsh in WSL with Powerlevel10k  
+✅ **Tools**: Modern CLI tools, GitHub integration  
 
-<details open>
-<summary><b>Terminal Setup (All Platforms)</b></summary>
-
-### `Setup-WezTerm` (5-10 min)
-- ✓ **WezTerm**: GPU-accelerated terminal with modern features
-- ✓ **Meslo Nerd Font**: Powerline icons and glyphs
-- ✓ **Custom Config**: Vim-style navigation (CTRL+h/j/k/l for panes)
-- ✓ **Coolnight Theme**: Custom color scheme
-- ✓ **Cross-platform**: Same config on Windows, macOS, Linux
-</details>
-
-<details open>
-<summary><b>Zsh + Modern CLI Tools (All Platforms)</b></summary>
-
-### `Setup-Zsh-*` (10-20 min)
-- ✓ **Zsh Shell**: Modern shell with powerful features
-- ✓ **Powerlevel10k**: Beautiful, fast theme with git integration
-- ✓ **Plugins**:
-  - `zsh-autosuggestions` - Fish-like suggestions
-  - `zsh-syntax-highlighting` - Real-time syntax validation
-- ✓ **Modern Tools**:
-  - `eza` - Better `ls` with colors and icons
-  - `zoxide` - Smart `cd` with frecency algorithm
-- ✓ **History**: Arrow key search, deduplication
-- ✓ **Nerd Fonts**: Icons and glyphs (Linux only, macOS uses system font)
-
-**Platform Differences:**
-- **macOS**: Homebrew-based, no Oh My Zsh (lighter, faster)
-- **Linux/WSL**: Oh My Zsh framework (more plugins, wider compatibility)
-- **Both**: Identical user experience and functionality
-</details>
-
-<details open>
-<summary><b>GitHub Integration (All Platforms)</b></summary>
-
-### `Setup-GitHubKeys` (5-10 min)
-- ✓ **SSH Key**: ed25519 key generation
-- ✓ **GPG Key**: 4096-bit RSA for commit signing
-- ✓ **Git Config**: Auto-sign all commits
-- ✓ **GitHub Upload**: Automatic key upload via `gh` CLI
-- ✓ **Verification**: Signed commits show "Verified" badge
-
-All future commits will be automatically signed and verified on GitHub.
-</details>
-
-<details open>
-<summary><b>Tiling Window Managers (Windows & macOS)</b></summary>
-
-### Windows: `Setup-Komorebi.ps1` (10 min)
-- ✓ **Komorebi**: i3-like tiling window manager for Windows
-- ✓ **whkd**: Windows hotkey daemon for keyboard shortcuts
-- ✓ **Default Config**: Sensible keybindings and layouts
-- ✓ **Workspace Management**: Multiple virtual workspaces
-- ✓ **i3-like Paradigm**: Vim-style navigation (h/j/k/l)
-
-### macOS: `Setup-AeroSpace.sh` (5 min)
-- ✓ **AeroSpace**: i3-like tiling window manager for macOS
-- ✓ **Integrated Hotkeys**: Built-in keyboard shortcut support
-- ✓ **No SIP Disable**: Works without disabling security features
-- ✓ **Default Config**: i3-inspired keybindings with Alt modifiers
-- ✓ **Fast Workspace Switching**: No animations, instant response
-
-**Common Features:**
-- Keyboard-driven workflow (Alt+h/j/k/l for navigation)
-- Virtual workspace management (Alt+1-9 to switch)
-- Tiling layouts (automatic window arrangement)
-- Text-based configuration files
-</details>
+### Linux/Ubuntu
+✅ **Shell**: Zsh + Oh My Zsh + Powerlevel10k  
+✅ **CLI Tools**: eza, zoxide, and more  
+✅ **GitHub**: SSH/GPG key generation and upload  
 
 ---
 
 ## ⏱️ Time Estimates
 
-| Platform | Mode | Total Time | Notes |
-|----------|------|------------|-------|
-| **Windows** | Skip apps | ~45 min | System setup + terminal + zsh + keys |
-| | Basic (15 apps) | ~1 hour | + essential app installations |
-| | Full (60+ apps) | ~2 hours | + complete app suite |
-| **macOS** | All scripts | ~30-45 min | Terminal + zsh + keys |
-| **Linux** | All scripts | ~15-20 min | Zsh + keys |
+| Platform | Setup Type | Time |
+|----------|-----------|------|
+| **macOS** | Complete setup | 15-20 min |
+| **Windows** | Skip apps | ~45 min |
+| | Basic (15 apps) | ~1 hour |
+| | Full (60+ apps) | ~2 hours |
+| **Linux** | Complete setup | 15-20 min |
 
-**Note:** Most time is spent on automated installations. You can do other tasks while scripts run.
-
----
-
-## 🔧 Features & Philosophy
-
-### Design Principles
-
-1. **Zero Manual Steps**: One command from fresh install to configured system
-2. **Sensible Defaults**: Works out of the box, customizable if needed
-3. **Cross-Platform**: Same experience on Windows, macOS, Linux
-4. **Idempotent**: Safe to run multiple times, won't break existing setups
-5. **Logged**: Everything logged with timestamps for debugging
-6. **Interactive**: Choose what to install, no forced installations
-
-### Platform-Specific Approaches
-
-**Windows:**
-- Uses native `winget` package manager (built into Windows 11)
-- PowerShell scripts with admin elevation checks
-- WSL for Linux environment (Ubuntu)
-- Separate app lists for flexibility (Basic/Full)
-
-**macOS:**
-- Homebrew for all package management
-- No Oh My Zsh dependency (lighter, faster)
-- Native Zsh (default shell since Catalina)
-- Xcode CLI tools for Git
-
-**Linux:**
-- Uses `apt` for system packages
-- Oh My Zsh framework for broader compatibility
-- Works on Ubuntu, Debian, WSL
-- Third-party repos for modern tools (eza, zoxide)
-
-All platforms achieve **identical end-user experience** despite different installation methods.
+*Most time is automated - you can multitask while scripts run.*
 
 ---
 
-## 📋 Prerequisites
+## 📚 Documentation
 
-**Literally nothing.** Just run the command.
+### Quick Access
+- **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Commands, tips, troubleshooting
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Code style & architecture
+- **[macos/README.md](macos/README.md)** - macOS scripts guide
+- **[windows/README.md](windows/README.md)** - Windows scripts guide
+- **[linux/README.md](linux/README.md)** - Linux scripts guide
 
-| Platform | Requirements |
-|----------|--------------|
-| **Windows** | Windows 11 (or 10 with updates) + Admin access + Internet |
-| **macOS** | macOS 11+ (Big Sur or later) + Internet |
-| **Linux** | Ubuntu 20.04+ or Debian 10+ + sudo access + Internet |
-
-The init script automatically installs:
-- ✓ Git (via winget/Xcode CLI/apt)
-- ✓ Homebrew (macOS only, if not present)
-- ✓ curl (Linux only, if not present)
-
-**No need to:**
-- ❌ Install Git first
-- ❌ Clone the repository manually
-- ❌ Install package managers
-- ❌ Download anything beforehand
-
-Just copy-paste the one-line command and go.
+### Detailed Guides
+- **[Setup-LazyVim-README.md](Setup-LazyVim-README.md)** - Neovim/LazyVim setup
+- **[Setup-Zsh-README.md](Setup-Zsh-README.md)** - Zsh configuration
+- **[SETUP-GUIDE.md](SETUP-GUIDE.md)** - Complete walkthrough
 
 ---
 
-## 🎨 Customization
+## 🔧 Key Features
 
-### Before Running
+### Cross-Platform Consistency
+Same development experience across all platforms:
+- Identical terminal (WezTerm)
+- Same shell (Zsh + Powerlevel10k)
+- Same modern CLI tools (eza, zoxide)
+- Same workflow (chezmoi for dotfiles)
 
-**Fork this repo if you want to:**
-- Customize app lists (Windows)
-- Modify WezTerm configuration
-- Change Zsh defaults
-- Add your own scripts
+### macOS Philosophy
+**Minimalist approach** - Scripts install packages, chezmoi manages configuration:
+1. `setup-essentials.sh` → Install Homebrew, Git, chezmoi (init dotfiles)
+2. `setup-packages.sh` → Install all tools (no config writing)
+3. `chezmoi apply` → Apply your dotfiles
 
-The init script will ask for your fork's URL (Option 3: Custom URL).
+Your dotfiles control everything: `.wezterm.lua`, `.zshrc`, `~/.config/nvim/`, etc.
 
-### After Running
+### Windows Flexibility
+**Three installation modes:**
+- **Skip** - System setup only (no apps)
+- **Basic** - 15 essential apps
+- **Full** - 60+ complete app suite
 
-<details>
-<summary><b>Windows Applications</b></summary>
-
-Edit app lists before first run:
-- `windows/Apps-List-Basic.txt` - 15 essential apps
-- `windows/Apps-List-Full.txt` - 60+ complete suite
-
-```txt
-# Find app IDs with:
-winget search "Application Name"
-
-# Add apps (use exact ID)
-Microsoft.VisualStudioCode
-
-# Comment out unwanted apps
-# Valve.Steam
-# EpicGames.EpicGamesLauncher
-```
-
-App categories in Full list:
-- Browsers, Dev tools, Productivity, Media, Gaming, Utilities
-</details>
-
-<details>
-<summary><b>WezTerm Terminal</b></summary>
-
-Edit `~/.wezterm.lua` (Windows: `%USERPROFILE%\.wezterm.lua`):
-
-```lua
--- Color scheme
-config.color_scheme = 'Coolnight'  -- or 'Batman', 'Tokyo Night', etc.
-
--- Font size
-config.font_size = 13  -- default: 13
-
--- Opacity
-config.window_background_opacity = 0.98  -- 0.0 to 1.0
-
--- Default program (Windows WSL)
-config.default_prog = { 'wsl.exe', '-d', 'Ubuntu' }
-```
-
-See [WezTerm docs](https://wezfurlong.org/wezterm/config/files.html) for more options.
-</details>
-
-<details>
-<summary><b>Zsh Configuration</b></summary>
-
-**General Zsh** (`~/.zshrc`):
-```bash
-# Add custom aliases
-alias ll='ls -la'
-alias g='git'
-alias dc='docker-compose'
-
-# Environment variables
-export EDITOR="code"
-export PATH="$HOME/bin:$PATH"
-
-# Additional Oh My Zsh plugins (Linux/WSL)
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting docker kubectl)
-```
-
-**Powerlevel10k Theme** (`~/.p10k.zsh`):
-```bash
-# Re-run configuration wizard anytime:
-p10k configure
-
-# Or edit ~/.p10k.zsh directly for:
-# - Prompt segments (git, directory, time, etc.)
-# - Colors and icons
-# - Left/right prompt layout
-```
-
-**Tool Options**:
-```bash
-# eza (ls) options
-alias ls='eza --icons=always --group-directories-first'
-alias ll='eza --icons=always --long --group-directories-first'
-alias la='eza --icons=always --long --all --group-directories-first'
-
-# zoxide (cd) aliases
-alias cd='z'
-alias cdi='zi'  # interactive selection
-```
-</details>
-
-<details>
-<summary><b>Git Configuration</b></summary>
-
-After `Setup-GitHubKeys`:
-
-```bash
-# View current config
-git config --global --list
-
-# Change commit signing
-git config --global commit.gpgsign true  # or false
-
-# Change default editor
-git config --global core.editor "code --wait"
-
-# Git aliases
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.st status
-git config --global alias.cm "commit -m"
-```
-</details>
+**Interactive setup** - Choose what to install, automated execution.
 
 ---
 
-## 🆘 Troubleshooting
+## 🧩 Complementary Tools
 
-See the documentation for detailed troubleshooting:
-- [SETUP-GUIDE.md](SETUP-GUIDE.md) - General troubleshooting
-- [Setup-Zsh-README.md](Setup-Zsh-README.md) - Zsh-specific issues
-- [windows/README.md](windows/README.md) - Windows-specific issues
-- [macos/README.md](macos/README.md) - macOS-specific issues
-- [linux/README.md](linux/README.md) - Linux-specific issues
+### chezmoi - Dotfile Manager (Core)
+**Repository**: [github.com/ovestokke/dotfiles](https://github.com/ovestokke/dotfiles)
+
+Manage your configuration files across machines:
+- WezTerm configuration
+- Zsh setup (Oh My Zsh, Powerlevel10k, aliases)
+- Neovim/LazyVim config
+- Git configuration
+- All your dotfiles in one place
+
+**Quick start:**
+```bash
+# Initialize and apply dotfiles
+chezmoi init --apply https://github.com/yourusername/dotfiles.git
+```
+
+**Installed automatically** by macOS `setup-essentials.sh` and Windows `Setup-Essentials.ps1`
+
+### Chris Titus Tech WinUtil (Windows Optional)
+Community tool for additional Windows tweaking. Use **after** running `Setup-Windows.ps1`:
+
+```powershell
+irm "https://christitus.com/win" | iex
+```
+
+**Why it's complementary:**
+- This repo: Curated baseline (bloatware, privacy, dev tools)
+- WinUtil: Visual GUI for granular tweaks
+- Run it after for fine-tuning
 
 ---
 
 ## 🔄 Updating
 
-### Windows Applications
-```powershell
-winget upgrade --all
-```
+### Update Packages
 
-### macOS Tools
+**macOS:**
 ```bash
 brew update && brew upgrade
 ```
 
-### Linux/WSL Tools
-```bash
-# Update Oh My Zsh
-omz update
-
-# Update Powerlevel10k
-cd ~/.oh-my-zsh/custom/themes/powerlevel10k && git pull
-
-# Update plugins
-cd ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions && git pull
-cd ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && git pull
-
-# Update system packages
-sudo apt update && sudo apt upgrade
+**Windows:**
+```powershell
+winget upgrade --all
 ```
+
+**Linux:**
+```bash
+sudo apt update && sudo apt upgrade
+omz update  # Update Oh My Zsh
+```
+
+### Update Dotfiles (chezmoi)
+```bash
+chezmoi update  # Pull and apply changes
+```
+
+### Update Neovim Plugins
+```bash
+nvim
+:Lazy sync
+```
+
+---
+
+## 🆘 Need Help?
+
+Check these resources:
+1. **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Common commands and troubleshooting
+2. **Platform READMEs** - Detailed documentation for each OS
+3. **Detailed Guides** - Setup-LazyVim-README.md, Setup-Zsh-README.md
 
 ---
 
 ## 📖 Reference
 
 Based on: [Josean's WezTerm Terminal Setup Guide](https://www.josean.com/posts/how-to-setup-wezterm-terminal)
-
----
-
-## 🧩 Complementary Tools
-
-### Chezmoi - Dotfile Manager (Recommended)
-A cross-platform dotfile manager that works seamlessly with this bootstrap setup. Use it to manage your configuration files across machines.
-
-**Repository:** [github.com/ovestokke/dotfiles](https://github.com/ovestokke/dotfiles)
-
-**Why use chezmoi:**
-- Manage dotfiles across multiple machines (Windows, macOS, Linux)
-- Template support for machine-specific configs
-- Encryption for sensitive data (API keys, tokens)
-- Track changes in git with easy sync
-- Works perfectly after running bootstrap scripts
-
-**What's included in ovestokke/dotfiles:**
-- WezTerm configuration with Catppuccin Mocha theme
-- AeroSpace tiling window manager config (macOS)
-- Zsh configuration with Oh My Zsh and Powerlevel10k
-- Modern CLI tools setup (eza, zoxide, plugins)
-
-Quick start (one-line install):
-```bash
-# Automatic install + apply dotfiles
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ovestokke
-```
-
-Or install manually:
-```bash
-# Install chezmoi first
-brew install chezmoi          # macOS
-winget install twpayne.chezmoi # Windows
-sudo apt install chezmoi       # Linux
-
-# Initialize with ovestokke/dotfiles repo
-chezmoi init https://github.com/ovestokke/dotfiles.git
-
-# Apply dotfiles
-chezmoi apply
-```
-
-Managing dotfiles:
-```bash
-# Edit a dotfile
-chezmoi edit ~/.zshrc
-
-# View what would change
-chezmoi diff
-
-# Apply changes
-chezmoi apply
-
-# Add new dotfile
-chezmoi add ~/.newfile
-```
-
-See the [Chezmoi Quick Start Guide](https://www.chezmoi.io/quick-start/) for detailed setup.
-
-**Integration with this repo:**
-1. Run bootstrap scripts first (this repo) to set up base system
-2. Use chezmoi to apply and sync your personal configs (.zshrc, .wezterm.lua, .aerospace.toml)
-3. Keep both in sync across all your machines
-4. Fork ovestokke/dotfiles to customize for your own setup
-
----
-
-### Chris Titus Tech WinUtil (Optional)
-A popular community tool for additional Windows cleanup and tweaking. Use it AFTER running `Setup-Windows.ps1` if you want to:
-- Apply extra GUI‑driven privacy / services tweaks
-- Audit / remove remaining Microsoft Store apps
-- Tweak Windows features granularly (services, context menu, scheduled tasks)
-- Run additional debloat steps or selective installs
-
-Quick launch (PowerShell as Administrator):
-```powershell
-irm "https://christitus.com/win" | iex
-```
-
-Why it's complementary (not a replacement):
-- This repository already performs a curated, opinionated baseline (bloat removal, privacy, dev tooling)
-- WinUtil lets you visually review and optionally apply further changes
-- Running it first can overlap with our automated steps; run it after to layer fine‑grained tweaks
-
-Recommendations:
-- Create a restore point before large tweak batches
-- Review each tab; avoid blindly applying every toggle
-- Skip duplicate debloat actions already handled here (e.g., Cortana removal)
 
 ---
 

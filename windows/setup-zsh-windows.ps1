@@ -98,6 +98,22 @@ else {
     Write-Info "Selected distribution: $selectedDistro"
 }
 
+# Verify WSL distribution is running/usable
+Write-Info "Verifying WSL distribution is configured..."
+try {
+    $testResult = wsl -d $selectedDistro -e true 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "Distribution not properly configured"
+    }
+    Write-Success "WSL distribution is ready"
+}
+catch {
+    Write-Fail "WSL distribution '$selectedDistro' is not properly configured"
+    Write-Info "Try running: wsl -d $selectedDistro"
+    Write-Info "Complete the initial setup, then run this script again"
+    exit 1
+}
+
 Write-Host ""
 
 #endregion
@@ -119,10 +135,24 @@ if (-not (Test-Path $linuxScriptPath)) {
 Write-Success "Found $linuxScriptName"
 
 # Convert Windows path to WSL path
-# Assuming script is on C: drive or other Windows drive
 $linuxScriptDir = Split-Path $linuxScriptPath -Parent
-$driveLetter = (Get-Item $linuxScriptDir).PSDrive.Name
-$wslPath = $linuxScriptDir.Replace("$driveLetter`:\", "/mnt/$($driveLetter.ToLower())/").Replace("\", "/")
+
+try {
+    $driveInfo = Get-Item $linuxScriptDir -ErrorAction Stop
+    $driveLetter = $driveInfo.PSDrive.Name
+    
+    if ([string]::IsNullOrEmpty($driveLetter)) {
+        throw "Could not determine drive letter"
+    }
+    
+    # Properly escape path and convert to WSL format
+    $relativePath = $linuxScriptDir.Substring(3).Replace("\", "/")
+    $wslPath = "/mnt/$($driveLetter.ToLower())/$relativePath"
+}
+catch {
+    Write-Fail "Failed to convert Windows path to WSL path: $($_.Exception.Message)"
+    exit 1
+}
 
 Write-Info "WSL path: $wslPath"
 Write-Host ""
