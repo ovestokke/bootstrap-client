@@ -253,17 +253,18 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Available setup scripts:" -ForegroundColor Yellow
-Write-Host "  [1] Setup-System.ps1      → Bloatware, privacy, WSL, apps" -ForegroundColor White
-Write-Host "  [2] Setup-Essentials.ps1  → Git + chezmoi (init dotfiles)" -ForegroundColor White
-Write-Host "  [3] Setup-Packages.ps1    → All tools (WezTerm, Neovim, etc.)" -ForegroundColor White
-Write-Host "  [4] chezmoi apply         → Apply your dotfiles" -ForegroundColor White
-Write-Host "  [5] Setup-PowerShell.ps1  → PowerShell profile (optional)" -ForegroundColor White
-Write-Host "  [6] Setup-Komorebi.ps1    → Tiling WM (optional)" -ForegroundColor White
-Write-Host "  [7] Run core setup        → Automated workflow (1→2→3→4)" -ForegroundColor White
+Write-Host "  [1] System cleanup        → Remove bloatware, configure privacy, enable WSL" -ForegroundColor White
+Write-Host "  [2] Install apps          → Choose app categories (Basic/Gaming/Developer/Full)" -ForegroundColor White
+Write-Host "  [3] Setup essentials      → Install Git + chezmoi, initialize dotfiles" -ForegroundColor White
+Write-Host "  [4] Install packages      → Dev tools (WezTerm, Neovim, etc.)" -ForegroundColor White
+Write-Host "  [5] Apply dotfiles        → Run chezmoi apply" -ForegroundColor White
+Write-Host "  [6] PowerShell profile    → Configure PowerShell (optional)" -ForegroundColor White
+Write-Host "  [7] Komorebi WM           → Install tiling window manager (optional)" -ForegroundColor White
+Write-Host "  [8] Run full workflow     → Automated setup (1→2→3→4→5)" -ForegroundColor White
 Write-Host "  [0] Exit                  → Manual setup" -ForegroundColor Gray
 Write-Host ""
 
-$choice = Read-Host "What would you like to do? (0-7)"
+$choice = Read-Host "What would you like to do? (0-8)"
 
 switch ($choice) {
     "1" {
@@ -279,6 +280,18 @@ switch ($choice) {
         }
     }
     "2" {
+        $script = Join-Path $cloneLocation "windows\Setup-Apps.ps1"
+        if (Test-Path $script) {
+            Write-Host ""
+            Write-Host "Launching Setup-Apps.ps1..." -ForegroundColor Green
+            Push-Location (Join-Path $cloneLocation "windows")
+            & $script
+            Pop-Location
+        } else {
+            Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
+        }
+    }
+    "3" {
         $script = Join-Path $cloneLocation "windows\Setup-Essentials.ps1"
         if (Test-Path $script) {
             Write-Host ""
@@ -290,7 +303,7 @@ switch ($choice) {
             Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
         }
     }
-    "3" {
+    "4" {
         $script = Join-Path $cloneLocation "windows\Setup-Packages.ps1"
         if (Test-Path $script) {
             Write-Host ""
@@ -302,7 +315,7 @@ switch ($choice) {
             Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
         }
     }
-    "4" {
+    "5" {
         if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
             Write-Host ""
             Write-Host "Running: chezmoi apply" -ForegroundColor Green
@@ -311,7 +324,7 @@ switch ($choice) {
             Write-Host "[FAIL] chezmoi not found. Run Setup-Essentials.ps1 first." -ForegroundColor Red
         }
     }
-    "5" {
+    "6" {
         $script = Join-Path $cloneLocation "windows\Setup-PowerShell.ps1"
         if (Test-Path $script) {
             Write-Host ""
@@ -323,7 +336,7 @@ switch ($choice) {
             Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
         }
     }
-    "6" {
+    "7" {
         $script = Join-Path $cloneLocation "windows\Setup-Komorebi.ps1"
         if (Test-Path $script) {
             Write-Host ""
@@ -335,46 +348,54 @@ switch ($choice) {
             Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
         }
     }
-    "7" {
+    "8" {
         Write-Host ""
         Write-Host "========================================" -ForegroundColor Green
-        Write-Host "Running Core Setup Workflow" -ForegroundColor Green
+        Write-Host "Running Full Setup Workflow" -ForegroundColor Green
         Write-Host "========================================" -ForegroundColor Green
         Write-Host ""
         
         Push-Location (Join-Path $cloneLocation "windows")
         
-        # Step 1: System Setup
+        # Step 1: System Cleanup
         $script = "Setup-System.ps1"
         if (Test-Path $script) {
-            Write-Host "→ Step 1/4: Running Setup-System.ps1" -ForegroundColor Cyan
+            Write-Host "→ Step 1/5: Running Setup-System.ps1" -ForegroundColor Cyan
             & ".\$script"
             Write-Host ""
         }
         
-        # Step 2: Essentials
+        # Step 2: Install Apps
+        $script = "Setup-Apps.ps1"
+        if (Test-Path $script) {
+            Write-Host "→ Step 2/5: Running Setup-Apps.ps1" -ForegroundColor Cyan
+            & ".\$script"
+            Write-Host ""
+        }
+        
+        # Step 3: Essentials
         $script = "Setup-Essentials.ps1"
         if (Test-Path $script) {
-            Write-Host "→ Step 2/4: Running Setup-Essentials.ps1" -ForegroundColor Cyan
+            Write-Host "→ Step 3/5: Running Setup-Essentials.ps1" -ForegroundColor Cyan
             & ".\$script"
             Write-Host ""
         }
         
-        # Step 3: Packages
+        # Step 4: Packages
         $script = "Setup-Packages.ps1"
         if (Test-Path $script) {
-            Write-Host "→ Step 3/4: Running Setup-Packages.ps1" -ForegroundColor Cyan
+            Write-Host "→ Step 4/5: Running Setup-Packages.ps1" -ForegroundColor Cyan
             & ".\$script"
             Write-Host ""
         }
         
-        # Step 4: Apply dotfiles
+        # Step 5: Apply dotfiles
         if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
-            Write-Host "→ Step 4/4: Running chezmoi apply" -ForegroundColor Cyan
+            Write-Host "→ Step 5/5: Running chezmoi apply" -ForegroundColor Cyan
             chezmoi apply
             Write-Host ""
             Write-Host "========================================" -ForegroundColor Green
-            Write-Host "Core Setup Complete!" -ForegroundColor Green
+            Write-Host "Full Setup Complete!" -ForegroundColor Green
             Write-Host "========================================" -ForegroundColor Green
         } else {
             Write-Host "⚠ chezmoi not available, skipping dotfiles step" -ForegroundColor Yellow
@@ -391,6 +412,7 @@ switch ($choice) {
         Write-Host "To run scripts manually:" -ForegroundColor Cyan
         Write-Host "  cd $cloneLocation\windows" -ForegroundColor White
         Write-Host "  .\Setup-System.ps1" -ForegroundColor White
+        Write-Host "  .\Setup-Apps.ps1" -ForegroundColor White
         Write-Host "  .\Setup-Essentials.ps1" -ForegroundColor White
         Write-Host "  .\Setup-Packages.ps1" -ForegroundColor White
         Write-Host "  chezmoi apply" -ForegroundColor White
