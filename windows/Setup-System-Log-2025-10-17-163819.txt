@@ -1,0 +1,169 @@
+**********************
+PowerShell transcript start
+Start time: 20251017163819
+Username: ARES\ovsto
+RunAs User: ARES\ovsto
+Configuration Name: 
+Machine: ARES (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll
+Process ID: 25428
+PSVersion: 7.5.3
+PSEdition: Core
+GitCommitId: 7.5.3
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is D:\Github\bootstrap-client\windows\Setup-System-Log-2025-10-17-163819.txt
+Logging to: D:\Github\bootstrap-client\windows\Setup-System-Log-2025-10-17-163819.txt
+
+========================================
+Computer Hostname Configuration
+========================================
+
+Current hostname: ARES
+
+[SKIP] Keeping current computer name: ARES
+
+========================================
+System Restore Configuration
+========================================
+
+[OK] System Restore is already enabled
+
+Creating restore point before system changes...
+PS>TerminatingError(): "The pipeline has been stopped."
+[SKIP] Restore point already created in the last 24 hours
+  → Created: 20251016171926.228856-000
+
+========================================
+Removing Bloatware...
+========================================
+Attempting to remove: Microsoft.549981C3F5F10
+  - Not installed: Microsoft.549981C3F5F10
+Attempting to remove: Microsoft.MicrosoftOfficeHub
+  - Not installed: Microsoft.MicrosoftOfficeHub
+Attempting to remove: Microsoft.WindowsFeedbackHub
+  - Not installed: Microsoft.WindowsFeedbackHub
+Attempting to remove: Microsoft.GetHelp
+  - Not installed: Microsoft.GetHelp
+Attempting to remove: Microsoft.Getstarted
+  - Not installed: Microsoft.Getstarted
+Attempting to remove: Microsoft.People
+  - Not installed: Microsoft.People
+Attempting to remove: Microsoft.WindowsCamera
+  - Not installed: Microsoft.WindowsCamera
+Attempting to remove: Microsoft.WindowsMaps
+  - Not installed: Microsoft.WindowsMaps
+Attempting to remove: Microsoft.ZuneMusic
+  - Not installed: Microsoft.ZuneMusic
+Attempting to remove: Microsoft.ZuneVideo
+  - Not installed: Microsoft.ZuneVideo
+Attempting to remove: Microsoft.MicrosoftSolitaireCollection
+  - Not installed: Microsoft.MicrosoftSolitaireCollection
+Attempting to remove: Microsoft.MixedReality.Portal
+  - Not installed: Microsoft.MixedReality.Portal
+Attempting to remove: Microsoft.SkypeApp
+  - Not installed: Microsoft.SkypeApp
+
+========================================
+Configuring Privacy Settings...
+========================================
+  [OK] Set AllowTelemetry in HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+  [OK] Set DisableSearchBoxSuggestions in HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+  [OK] Set AllowCortana in HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+  [OK] Set EnableActivityFeed in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+  [OK] Set PublishUserActivities in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+  [OK] Set UploadUserActivities in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+
+========================================
+Configuring UI/UX Settings...
+========================================
+  [OK] Set HideFileExt in HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+  [OK] Set Hidden in HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+
+========================================
+Enabling Developer Mode...
+========================================
+  [OK] Set AllowDevelopmentWithoutDevLicense in HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
+
+========================================
+WSL Installation
+========================================
+
+[OK] WSL is already installed
+[OK] Ubuntu distribution is already installed
+
+After completing this script, configure WSL by running:
+  1. wsl -d Ubuntu
+  2. cd /mnt/c/path/to/bootstrap-client
+  3. bash linux/Setup-Zsh-Linux.sh
+  4. bash linux/Setup-GitHubKeys.sh
+
+========================================
+Application Installation Options
+========================================
+
+Choose installation mode:
+  [1] Skip       - System setup only (no apps)
+  [2] Basic      - Essential apps only (~10 apps)
+  [3] Gaming     - Gaming platforms + peripherals + monitoring
+  [4] Developer  - Development tools only
+  [5] Full       - Everything (Basic + Gaming + Developer + Productivity)
+
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+ ovsto@Ares D:\....\windows  master 
+PS>.\init-windows.ps1
+.\init-windows.ps1: The term '.\init-windows.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+.\init-windows.ps1: The term '.\init-windows.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+ ovsto@Ares D:\....\windows  master 
+PS>cd ..
+ ovsto@Ares D:\....\bootstrap-client  master 
+PS>.\init-windows.ps1
+
+========================================
+Bootstrap Client Initialization
+========================================
+
+[OK] Running as Administrator
+
+[OK] Execution policy set to Unrestricted
+
+========================================
+Git Installation
+========================================
+
+[OK] Git is already installed: git version 2.51.0.windows.2
+
+========================================
+Repository Setup
+========================================
+
+✓ Running from repository: D:\Github\bootstrap-client
+✓ Confirmed: bootstrap-client repository
+
+[SKIP] Using current version
+
+
+========================================
+Setup Workflow Options
+========================================
+
+Available setup scripts:
+  [1] Setup-System.ps1      → Bloatware, privacy, WSL, apps
+  [2] Setup-Essentials.ps1  → Git + chezmoi (init dotfiles)
+  [3] Setup-Packages.ps1    → All tools (WezTerm, Neovim, etc.)
+  [4] chezmoi apply         → Apply your dotfiles
+  [5] Setup-PowerShell.ps1  → PowerShell profile (optional)
+  [6] Setup-Komorebi.ps1    → Tiling WM (optional)
+  [7] Run core setup        → Automated workflow (1→2→3→4)
+  [0] Exit                  → Manual setup
+
