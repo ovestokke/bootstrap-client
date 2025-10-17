@@ -1,0 +1,38 @@
+# Windows Applications List - PRODUCTIVITY
+# Productivity, communication, and utility applications
+# Format: One package ID per line
+# Lines starting with # are comments and will be ignored
+
+# Browsers
+Mozilla.Firefox
+Google.Chrome
+
+# Productivity & Organization
+AgileBits.1Password
+Obsidian.Obsidian
+Microsoft.PowerToys
+Flow-Launcher.Flow-Launcher
+
+# Communication
+SlackTechnologies.Slack
+Discord.Discord
+OpenWhisperSystems.Signal
+
+# File Management & Sync
+Google.GoogleDrive
+BillStewart.SyncthingWindowsSetup
+
+# Media & Entertainment
+VideoLAN.VLC
+TIDALMusicAS.TIDAL
+
+# Utilities - Essential
+7zip.7zip
+JAMSoftware.TreeSize.Free
+
+# Utilities - Advanced
+Klocman.BulkCrapUninstaller
+BleachBit.BleachBit
+
+# Privacy & Security
+OO-Software.ShutUp10

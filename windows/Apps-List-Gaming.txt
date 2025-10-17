@@ -1,0 +1,29 @@
+# Windows Applications List - GAMING
+# Gaming-specific applications: platforms, peripherals, monitoring
+# Format: One package ID per line
+# Lines starting with # are comments and will be ignored
+
+# Gaming Platforms
+Valve.Steam
+EpicGames.EpicGamesLauncher
+ElectronicArts.EADesktop
+
+# Gaming Peripherals
+Logitech.GHUB
+
+# System Monitoring (crucial for gaming performance)
+REALiX.HWiNFO
+CPUID.CPU-Z
+TechPowerUp.GPU-Z
+
+# Window Management
+LGUG2Z.komorebi
+LGUG2Z.whkd
+
+# Communication
+Discord.Discord
+
+# Media
+VideoLAN.VLC
+
+# Note: NVIDIA App is installed separately by Setup-System.ps1 with GPU detection
