@@ -113,7 +113,7 @@ $output += ""
 $output += "=" * 120
 
 # Save to file
-$output | Out-File -FilePath .\InstalledSoftware.txt -Encoding UTF8
+$output | Out-File -FilePath .\InstalledSoftware.log -Encoding UTF8
 
 # Also export to CSV for easy analysis
 $allApps | Export-Csv -Path .\InstalledSoftware.csv -NoTypeInformation -Encoding UTF8
@@ -122,7 +122,7 @@ $allApps | Export-Csv -Path .\InstalledSoftware.csv -NoTypeInformation -Encoding
 
 Write-Host ""
 Write-Host "Installed software list saved to:"
-Write-Host "  - .\InstalledSoftware.txt (formatted report)"
+Write-Host "  - .\InstalledSoftware.log (formatted report)"
 Write-Host "  - .\InstalledSoftware.csv (spreadsheet format)"
 Write-Host ""
 Write-Host "Summary:"

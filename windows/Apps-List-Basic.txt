@@ -1,12 +1,14 @@
 # Windows Applications List - BASIC
-# Essential applications for a minimal Windows setup
+# Minimal essential applications for any Windows setup
 # Format: One package ID per line
 # Lines starting with # are comments and will be ignored
+#
+# This list is included in ALL installation modes (Gaming, Developer, Full)
 
 # Browsers
 Mozilla.Firefox
 
-# Development Tools - Core
+# Development Tools - Absolute essentials
 Git.Git
 GitHub.cli
 Microsoft.VisualStudioCode
@@ -15,9 +17,11 @@ Microsoft.VisualStudioCode
 Microsoft.WindowsTerminal
 Microsoft.PowerShell
 
-# Utilities - Essential
+# Password Management
+AgileBits.1Password
+
+# Utilities
 7zip.7zip
 
 # Privacy & Security
 OO-Software.ShutUp10
-

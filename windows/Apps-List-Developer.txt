@@ -1,0 +1,50 @@
+# Windows Applications List - DEVELOPER
+# Development tools and programming languages
+# Format: One package ID per line
+# Lines starting with # are comments and will be ignored
+
+# Version Control
+Git.Git
+GitHub.GitHubDesktop
+GitHub.cli
+
+# Editors & IDEs
+Microsoft.VisualStudioCode
+
+# Neovim
+JesseDuffield.lazygit
+Neovim.Neovim
+ajeetdsouza.zoxide
+cURL.cURL
+sharkdp.fd 
+BurntSushi.ripgrep.MSVC
+junegunn.fzf
+BrechtSanders.WinLibs.POSIX.UCRT
+
+# Terminals
+Microsoft.WindowsTerminal
+wez.wezterm
+Microsoft.PowerShell
+
+# Languages & Runtimes
+OpenJS.NodeJS.LTS
+Python.Python.3.12
+
+# Containers
+Docker.DockerDesktop
+
+# Cloud & DevOps
+Microsoft.AzureCLI
+Google.CloudSDK
+Hashicorp.Terraform
+Tailscale.Tailscale
+
+# AI Development Tools
+Anthropic.Claude
+Anthropic.ClaudeCode
+SST.opencode
+
+# Utilities
+sharkdp.bat
+GnuPG.GnuPG
+GnuPG.Gpg4win

@@ -2,16 +2,16 @@
 # Bootstrap Client Initialization Script for Windows
 #
 # @author: Ovestokke
-# @version: 1.0
+# @version: 2.0
 #
 # This script automates the initial setup:
 # 1. Installs Git via winget
-# 2. Clones the bootstrap-client repository
-# 3. Launches the main Setup-Windows.ps1 script
+# 2. Clones or updates the bootstrap-client repository
+# 3. Presents setup workflow options
 #
 # Usage:
-#   irm https://raw.githubusercontent.com/YOUR-USERNAME/bootstrap-client/master/Init-Windows.ps1 | iex
-#   OR save this file and run: .\Init-Windows.ps1
+#   irm https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/init-windows.ps1 | iex
+#   OR save this file and run: .\init-windows.ps1
 #
 
 #region Setup
@@ -104,93 +104,140 @@ Write-Host "Repository Setup" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Ask for clone location
-$defaultLocation = "C:\bootstrap-client"
-$cloneLocation = Read-Host "Where should the repository be cloned? (default: $defaultLocation)"
+# Check if running from inside the repository
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-if ([string]::IsNullOrWhiteSpace($cloneLocation)) {
-    $cloneLocation = $defaultLocation
+if ($scriptDir -and (Test-Path (Join-Path $scriptDir ".git"))) {
+    Write-Host "✓ Running from repository: $scriptDir" -ForegroundColor Green
+    
+    # Verify it's the bootstrap-client repository
+    Push-Location $scriptDir
+    $remote = git remote get-url origin 2>$null
+    Pop-Location
+    
+    if ($remote -like "*bootstrap-client*") {
+        Write-Host "✓ Confirmed: bootstrap-client repository" -ForegroundColor Green
+        Write-Host ""
+        
+        $pull = Read-Host "Pull latest changes? (Y/n)"
+        if ($pull -ne "n" -and $pull -ne "N") {
+            Write-Host ""
+            Write-Host "Pulling latest changes..." -ForegroundColor Cyan
+            Push-Location $scriptDir
+            git pull
+            $pullSuccess = $LASTEXITCODE -eq 0
+            Pop-Location
+            
+            if ($pullSuccess) {
+                Write-Host "[OK] Repository updated" -ForegroundColor Green
+            } else {
+                Write-Host "[WARN] Git pull encountered issues" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "[SKIP] Using current version" -ForegroundColor Yellow
+        }
+        
+        $cloneLocation = $scriptDir
+        Write-Host ""
+    } else {
+        Write-Host "[WARN] This appears to be a different git repository" -ForegroundColor Yellow
+        Write-Host "Remote: $remote" -ForegroundColor Gray
+        Write-Host ""
+        
+        # Fall through to clone logic
+        $scriptDir = $null
+    }
 }
 
-Write-Host "Clone location: $cloneLocation" -ForegroundColor Cyan
+# If not running from repo, ask for clone location
+if (-not $scriptDir) {
+    $defaultLocation = "C:\bootstrap-client"
+    $cloneLocation = Read-Host "Where should the repository be cloned? (default: $defaultLocation)"
 
-# Check if directory already exists
-if (Test-Path $cloneLocation) {
-    Write-Host "[SKIP] Directory already exists: $cloneLocation" -ForegroundColor Yellow
-    
-    # Check if it's a git repository
-    if (Test-Path (Join-Path $cloneLocation ".git")) {
-        Write-Host "[OK] Directory is a git repository" -ForegroundColor Green
+    if ([string]::IsNullOrWhiteSpace($cloneLocation)) {
+        $cloneLocation = $defaultLocation
+    }
+
+    Write-Host "Clone location: $cloneLocation" -ForegroundColor Cyan
+
+    # Check if directory already exists
+    if (Test-Path $cloneLocation) {
+        Write-Host "[SKIP] Directory already exists: $cloneLocation" -ForegroundColor Yellow
         
-        # Ask if user wants to update
-        $update = Read-Host "Update repository? (Y/N)"
-        if ($update -eq "Y" -or $update -eq "y") {
-            Write-Host "Updating repository..." -ForegroundColor Yellow
-            Push-Location $cloneLocation
-            git pull
-            Pop-Location
-            Write-Host "[OK] Repository updated" -ForegroundColor Green
+        # Check if it's a git repository
+        if (Test-Path (Join-Path $cloneLocation ".git")) {
+            Write-Host "[OK] Directory is a git repository" -ForegroundColor Green
+            
+            # Ask if user wants to update
+            $update = Read-Host "Update repository? (Y/N)"
+            if ($update -eq "Y" -or $update -eq "y") {
+                Write-Host "Updating repository..." -ForegroundColor Yellow
+                Push-Location $cloneLocation
+                git pull
+                Pop-Location
+                Write-Host "[OK] Repository updated" -ForegroundColor Green
+            }
+        }
+        else {
+            Write-Host "[FAIL] Directory exists but is not a git repository" -ForegroundColor Red
+            Write-Host "Please remove the directory or choose a different location" -ForegroundColor Yellow
+            exit 1
         }
     }
     else {
-        Write-Host "[FAIL] Directory exists but is not a git repository" -ForegroundColor Red
-        Write-Host "Please remove the directory or choose a different location" -ForegroundColor Yellow
-        exit 1
-    }
-}
-else {
-    Write-Host ""
-    Write-Host "Repository URL options:" -ForegroundColor Yellow
-    Write-Host "  [1] HTTPS (default): https://github.com/ovestokke/bootstrap-client.git" -ForegroundColor White
-    Write-Host "  [2] SSH: git@github.com:ovestokke/bootstrap-client.git" -ForegroundColor White
-    Write-Host "  [3] Custom URL (your fork or private repo)" -ForegroundColor White
-    Write-Host ""
-    
-    $urlChoice = Read-Host "Choose clone method (1, 2, or 3, default: 1)"
-    
-    if ([string]::IsNullOrWhiteSpace($urlChoice)) {
-        $urlChoice = "1"
-    }
-    
-    switch ($urlChoice) {
-        "1" {
-            $repoUrl = "https://github.com/ovestokke/bootstrap-client.git"
+        Write-Host ""
+        Write-Host "Repository URL options:" -ForegroundColor Yellow
+        Write-Host "  [1] HTTPS (default): https://github.com/ovestokke/bootstrap-client.git" -ForegroundColor White
+        Write-Host "  [2] SSH: git@github.com:ovestokke/bootstrap-client.git" -ForegroundColor White
+        Write-Host "  [3] Custom URL (your fork or private repo)" -ForegroundColor White
+        Write-Host ""
+        
+        $urlChoice = Read-Host "Choose clone method (1, 2, or 3, default: 1)"
+        
+        if ([string]::IsNullOrWhiteSpace($urlChoice)) {
+            $urlChoice = "1"
         }
-        "2" {
-            $repoUrl = "git@github.com:ovestokke/bootstrap-client.git"
-        }
-        "3" {
-            $repoUrl = Read-Host "Enter repository URL"
-            if ($repoUrl -notmatch '^(https?://|git@)[\w\-\.]+') {
-                Write-Host "[FAIL] Invalid URL format. Must start with https://, http://, or git@" -ForegroundColor Red
+        
+        switch ($urlChoice) {
+            "1" {
+                $repoUrl = "https://github.com/ovestokke/bootstrap-client.git"
+            }
+            "2" {
+                $repoUrl = "git@github.com:ovestokke/bootstrap-client.git"
+            }
+            "3" {
+                $repoUrl = Read-Host "Enter repository URL"
+                if ($repoUrl -notmatch '^(https?://|git@)[\w\-\.]+') {
+                    Write-Host "[FAIL] Invalid URL format. Must start with https://, http://, or git@" -ForegroundColor Red
+                    exit 1
+                }
+            }
+            default {
+                Write-Host "[FAIL] Invalid choice" -ForegroundColor Red
                 exit 1
             }
         }
-        default {
-            Write-Host "[FAIL] Invalid choice" -ForegroundColor Red
-            exit 1
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "Cloning repository from: $repoUrl" -ForegroundColor Cyan
-    Write-Host "To: $cloneLocation" -ForegroundColor Cyan
-    Write-Host ""
-    
-    try {
-        git clone $repoUrl $cloneLocation
         
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Repository cloned successfully" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "Cloning repository from: $repoUrl" -ForegroundColor Cyan
+        Write-Host "To: $cloneLocation" -ForegroundColor Cyan
+        Write-Host ""
+        
+        try {
+            git clone $repoUrl $cloneLocation
+            
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "[OK] Repository cloned successfully" -ForegroundColor Green
+            }
+            else {
+                Write-Host "[FAIL] Git clone failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+                exit 1
+            }
         }
-        else {
-            Write-Host "[FAIL] Git clone failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+        catch {
+            Write-Host "[FAIL] Error cloning repository: $($_.Exception.Message)" -ForegroundColor Red
             exit 1
         }
-    }
-    catch {
-        Write-Host "[FAIL] Error cloning repository: $($_.Exception.Message)" -ForegroundColor Red
-        exit 1
     }
 }
 
@@ -198,46 +245,157 @@ Write-Host ""
 
 #endregion
 
-#region Launch Setup Script
+#region Setup Workflow Menu
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Launch Main Setup" -ForegroundColor Cyan
+Write-Host "Setup Workflow Options" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-$setupScript = Join-Path $cloneLocation "windows\Setup-Windows.ps1"
-
-if (-not (Test-Path $setupScript)) {
-    Write-Host "[FAIL] Setup script not found: $setupScript" -ForegroundColor Red
-    exit 1
-}
-
-Write-Host "Setup script found: $setupScript" -ForegroundColor Green
+Write-Host "Available setup scripts:" -ForegroundColor Yellow
+Write-Host "  [1] Setup-System.ps1      → Bloatware, privacy, WSL, apps" -ForegroundColor White
+Write-Host "  [2] Setup-Essentials.ps1  → Git + chezmoi (init dotfiles)" -ForegroundColor White
+Write-Host "  [3] Setup-Packages.ps1    → All tools (WezTerm, Neovim, etc.)" -ForegroundColor White
+Write-Host "  [4] chezmoi apply         → Apply your dotfiles" -ForegroundColor White
+Write-Host "  [5] Setup-PowerShell.ps1  → PowerShell profile (optional)" -ForegroundColor White
+Write-Host "  [6] Setup-Komorebi.ps1    → Tiling WM (optional)" -ForegroundColor White
+Write-Host "  [7] Run core setup        → Automated workflow (1→2→3→4)" -ForegroundColor White
+Write-Host "  [0] Exit                  → Manual setup" -ForegroundColor Gray
 Write-Host ""
 
-$launch = Read-Host "Launch Setup-Windows.ps1 now? (Y/N)"
+$choice = Read-Host "What would you like to do? (0-7)"
 
-if ($launch -eq "Y" -or $launch -eq "y") {
-    Write-Host ""
-    Write-Host "========================================" -ForegroundColor Green
-    Write-Host "Launching Setup-Windows.ps1" -ForegroundColor Green
-    Write-Host "========================================" -ForegroundColor Green
-    Write-Host ""
-    
-    Push-Location (Join-Path $cloneLocation "windows")
-    & $setupScript
-    Pop-Location
-}
-else {
-    Write-Host ""
-    Write-Host "========================================" -ForegroundColor Yellow
-    Write-Host "Setup script not launched" -ForegroundColor Yellow
-    Write-Host "========================================" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "To continue setup manually, run:" -ForegroundColor Cyan
-    Write-Host "  cd $cloneLocation\windows" -ForegroundColor White
-    Write-Host "  .\Setup-Windows.ps1" -ForegroundColor White
-    Write-Host ""
+switch ($choice) {
+    "1" {
+        $script = Join-Path $cloneLocation "windows\Setup-System.ps1"
+        if (Test-Path $script) {
+            Write-Host "" -ForegroundColor Green
+            Write-Host "Launching Setup-System.ps1..." -ForegroundColor Green
+            Push-Location (Join-Path $cloneLocation "windows")
+            & $script
+            Pop-Location
+        } else {
+            Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
+        }
+    }
+    "2" {
+        $script = Join-Path $cloneLocation "windows\Setup-Essentials.ps1"
+        if (Test-Path $script) {
+            Write-Host ""
+            Write-Host "Launching Setup-Essentials.ps1..." -ForegroundColor Green
+            Push-Location (Join-Path $cloneLocation "windows")
+            & $script
+            Pop-Location
+        } else {
+            Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
+        }
+    }
+    "3" {
+        $script = Join-Path $cloneLocation "windows\Setup-Packages.ps1"
+        if (Test-Path $script) {
+            Write-Host ""
+            Write-Host "Launching Setup-Packages.ps1..." -ForegroundColor Green
+            Push-Location (Join-Path $cloneLocation "windows")
+            & $script
+            Pop-Location
+        } else {
+            Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
+        }
+    }
+    "4" {
+        if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
+            Write-Host ""
+            Write-Host "Running: chezmoi apply" -ForegroundColor Green
+            chezmoi apply
+        } else {
+            Write-Host "[FAIL] chezmoi not found. Run Setup-Essentials.ps1 first." -ForegroundColor Red
+        }
+    }
+    "5" {
+        $script = Join-Path $cloneLocation "windows\Setup-PowerShell.ps1"
+        if (Test-Path $script) {
+            Write-Host ""
+            Write-Host "Launching Setup-PowerShell.ps1..." -ForegroundColor Green
+            Push-Location (Join-Path $cloneLocation "windows")
+            & $script
+            Pop-Location
+        } else {
+            Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
+        }
+    }
+    "6" {
+        $script = Join-Path $cloneLocation "windows\Setup-Komorebi.ps1"
+        if (Test-Path $script) {
+            Write-Host ""
+            Write-Host "Launching Setup-Komorebi.ps1..." -ForegroundColor Green
+            Push-Location (Join-Path $cloneLocation "windows")
+            & $script
+            Pop-Location
+        } else {
+            Write-Host "[FAIL] Script not found: $script" -ForegroundColor Red
+        }
+    }
+    "7" {
+        Write-Host ""
+        Write-Host "========================================" -ForegroundColor Green
+        Write-Host "Running Core Setup Workflow" -ForegroundColor Green
+        Write-Host "========================================" -ForegroundColor Green
+        Write-Host ""
+        
+        Push-Location (Join-Path $cloneLocation "windows")
+        
+        # Step 1: System Setup
+        $script = "Setup-System.ps1"
+        if (Test-Path $script) {
+            Write-Host "→ Step 1/4: Running Setup-System.ps1" -ForegroundColor Cyan
+            & ".\$script"
+            Write-Host ""
+        }
+        
+        # Step 2: Essentials
+        $script = "Setup-Essentials.ps1"
+        if (Test-Path $script) {
+            Write-Host "→ Step 2/4: Running Setup-Essentials.ps1" -ForegroundColor Cyan
+            & ".\$script"
+            Write-Host ""
+        }
+        
+        # Step 3: Packages
+        $script = "Setup-Packages.ps1"
+        if (Test-Path $script) {
+            Write-Host "→ Step 3/4: Running Setup-Packages.ps1" -ForegroundColor Cyan
+            & ".\$script"
+            Write-Host ""
+        }
+        
+        # Step 4: Apply dotfiles
+        if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
+            Write-Host "→ Step 4/4: Running chezmoi apply" -ForegroundColor Cyan
+            chezmoi apply
+            Write-Host ""
+            Write-Host "========================================" -ForegroundColor Green
+            Write-Host "Core Setup Complete!" -ForegroundColor Green
+            Write-Host "========================================" -ForegroundColor Green
+        } else {
+            Write-Host "⚠ chezmoi not available, skipping dotfiles step" -ForegroundColor Yellow
+        }
+        
+        Pop-Location
+    }
+    default {
+        Write-Host ""
+        Write-Host "========================================" -ForegroundColor Yellow
+        Write-Host "Manual Setup" -ForegroundColor Yellow
+        Write-Host "========================================" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "To run scripts manually:" -ForegroundColor Cyan
+        Write-Host "  cd $cloneLocation\windows" -ForegroundColor White
+        Write-Host "  .\Setup-System.ps1" -ForegroundColor White
+        Write-Host "  .\Setup-Essentials.ps1" -ForegroundColor White
+        Write-Host "  .\Setup-Packages.ps1" -ForegroundColor White
+        Write-Host "  chezmoi apply" -ForegroundColor White
+        Write-Host ""
+    }
 }
 
 #endregion

@@ -1,84 +1,20 @@
-# Windows Applications List - FULL
-# Complete set of applications including development, productivity, gaming, etc.
-# Format: One package ID per line
-# Lines starting with # are comments and will be ignored
+# Windows Applications List - FULL (DEPRECATED)
+#
+# ⚠️ This file is deprecated as of v2.0!
+# 
+# The FULL mode now uses multiple app list files:
+#   - Apps-List-Basic.txt
+#   - Apps-List-Gaming.txt
+#   - Apps-List-Developer.txt
+#   - Apps-List-Productivity.txt
+#
+# Setup-System.ps1 now offers 5 modes:
+#   [1] Skip       - No apps
+#   [2] Basic      - Essential apps only
+#   [3] Gaming     - Basic + Gaming
+#   [4] Developer  - Basic + Developer
+#   [5] Full       - Basic + Gaming + Developer + Productivity
+#
+# This file is kept for backwards compatibility but is not used by the new scripts.
+# Please use the new app list files instead.
 
-# Browsers
-Mozilla.Firefox
-Google.Chrome
-
-# Development Tools
-Git.Git
-GitHub.GitHubDesktop
-GitHub.cli
-Microsoft.VisualStudioCode
-OpenJS.NodeJS.LTS
-Python.Python.3.12
-Docker.DockerDesktop
-
-Microsoft.WindowsTerminal
-wez.wezterm
-Microsoft.PowerShell
-
-# Cloud & DevOps
-Microsoft.AzureCLI
-Google.CloudSDK
-Hashicorp.Terraform
-Tailscale.Tailscale
-
-# Productivity
-AgileBits.1Password
-Obsidian.Obsidian
-OpenWhisperSystems.Signal
-SlackTechnologies.Slack
-Discord.Discord
-Flow-Launcher.Flow-Launcher
-Microsoft.PowerToys
-
-# Window Management
-LGUG2Z.komorebi                      # Tiling window manager for Windows
-LGUG2Z.whkd                          # Windows hotkey daemon (pairs with komorebi)
-
-# Media
-VideoLAN.VLC
-TIDALMusicAS.TIDAL
-
-# Utilities
-7zip.7zip
-JAMSoftware.TreeSize.Free
-
-# Utilities - Advanced
-sharkdp.bat                          # Better 'cat' with syntax highlighting
-Klocman.BulkCrapUninstaller          # Advanced uninstaller utility
-BleachBit.BleachBit                  # System cleaner and privacy tool
-
-# Gaming Peripherals
-Logitech.GHUB
-
-# System Monitoring
-REALiX.HWiNFO
-CPUID.CPU-Z
-CPUID.HWMonitor
-TechPowerUp.GPU-Z
-
-# File Management & Sync
-Google.GoogleDrive
-BillStewart.SyncthingWindowsSetup
-
-# AI & Modern Tools
-Anthropic.Claude
-Anthropic.ClaudeCode
-# Ollama.Ollama
-SST.opencode
-
-# Design & Creativity
-# JGraph.Draw
-
-# Security & Privacy
-GnuPG.GnuPG
-GnuPG.Gpg4win
-
-# Gaming
-Valve.Steam
-EpicGames.EpicGamesLauncher
-ElectronicArts.EADesktop
