@@ -33,7 +33,7 @@ function Write-Info {
 #endregion
 
 # Start logging
-$logFile = Join-Path $PSScriptRoot "Setup-GitHubKeys-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').txt"
+$logFile = Join-Path $PSScriptRoot "Setup-GitHubKeys-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').log"
 Start-Transcript -Path $logFile
 Write-Host "Logging to: $logFile" -ForegroundColor Gray
 Write-Host ""

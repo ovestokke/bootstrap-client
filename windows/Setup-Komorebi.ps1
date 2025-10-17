@@ -15,7 +15,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit 1
 }
 
-$logFile = Join-Path $PSScriptRoot "Setup-Komorebi-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').txt"
+$logFile = Join-Path $PSScriptRoot "Setup-Komorebi-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').log"
 Start-Transcript -Path $logFile
 Write-Host "Logging to: $logFile" -ForegroundColor Gray
 Write-Host ""

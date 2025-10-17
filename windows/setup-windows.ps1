@@ -21,7 +21,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Start logging
-$logFile = Join-Path $PSScriptRoot "Setup-Windows-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').txt"
+$logFile = Join-Path $PSScriptRoot "Setup-Windows-Log-$(Get-Date -Format 'yyyy-MM-dd-HHmmss').log"
 Start-Transcript -Path $logFile
 Write-Host "Logging to: $logFile"
 Write-Host ""
