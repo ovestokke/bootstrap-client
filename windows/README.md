@@ -286,8 +286,6 @@ irm "https://christitus.com/win" | iex
 
 ## Architecture
 
-See [SCRIPTS-STATUS.md](SCRIPTS-STATUS.md) for detailed information about active vs deprecated scripts and migration guide from v1.x to v2.0.
-
 **Key improvements in v2.0:**
 - **Modular design** - Each script has a single, clear purpose
 - **Flexibility** - Run only what you need, when you need it
@@ -304,4 +302,3 @@ See [SCRIPTS-STATUS.md](SCRIPTS-STATUS.md) for detailed information about active
 - `../.wezterm.lua` - WezTerm configuration file
 - `../linux/` - Linux/WSL scripts
 - `../macos/` - macOS scripts
-- `SCRIPTS-STATUS.md` - Script status and migration guide
