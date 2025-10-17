@@ -477,15 +477,16 @@ Write-Host ""
 #region Additional Setup Scripts
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Additional Setup Available" -ForegroundColor Cyan
+Write-Host "Next Steps" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Recommended next steps:" -ForegroundColor Yellow
-Write-Host "  1. Setup-Essentials.ps1 - Install Git + chezmoi (init dotfiles)" -ForegroundColor White
-Write-Host "  2. Setup-Packages.ps1   - Install development tools (WezTerm, Neovim, etc.)" -ForegroundColor White
-Write-Host "  3. chezmoi apply        - Apply your dotfiles configuration" -ForegroundColor White
+Write-Host "Recommended workflow:" -ForegroundColor Yellow
+Write-Host "  1. Setup-Apps.ps1       - Install applications (Basic/Gaming/Developer/Full)" -ForegroundColor White
+Write-Host "  2. Setup-Essentials.ps1 - Install Git + chezmoi (init dotfiles)" -ForegroundColor White
+Write-Host "  3. Setup-Packages.ps1   - Install development tools (WezTerm, Neovim, etc.)" -ForegroundColor White
+Write-Host "  4. chezmoi apply        - Apply your dotfiles configuration" -ForegroundColor White
 Write-Host ""
-Write-Host "Optional scripts:" -ForegroundColor Cyan
+Write-Host "Optional:" -ForegroundColor Cyan
 Write-Host "  - Setup-PowerShell.ps1  - PowerShell profile (if not using chezmoi)" -ForegroundColor Gray
 Write-Host "  - Setup-Komorebi.ps1    - Tiling window manager" -ForegroundColor Gray
 Write-Host ""
