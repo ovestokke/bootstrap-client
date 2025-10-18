@@ -68,38 +68,30 @@ fi
 
 echo ""
 
-# Get user information
+# Get user information from git config (should be set by chezmoi dotfiles)
 print_header "User Information"
 
-# Try to get existing git config
 GIT_NAME=$(git config --global user.name 2>/dev/null || echo "")
 GIT_EMAIL=$(git config --global user.email 2>/dev/null || echo "")
 
-if [ -z "$GIT_NAME" ]; then
-    read -p "Enter your full name (for Git): " GIT_NAME
-else
-    print_info "Using existing Git name: $GIT_NAME"
-    read -p "Press Enter to use this name, or type a new one: " NEW_NAME
-    if [ ! -z "$NEW_NAME" ]; then
-        GIT_NAME="$NEW_NAME"
-    fi
+if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
+    print_error "Git user.name or user.email not configured"
+    echo ""
+    print_warning "Your Git configuration should come from chezmoi dotfiles"
+    print_info "Please ensure chezmoi is initialized and applied:"
+    echo "  1. chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git"
+    echo "  2. chezmoi apply"
+    echo ""
+    print_info "Or manually configure Git:"
+    echo "  git config --global user.name \"Your Name\""
+    echo "  git config --global user.email \"your.email@example.com\""
+    echo ""
+    exit 1
 fi
 
-if [ -z "$GIT_EMAIL" ]; then
-    read -p "Enter your email (for Git & GitHub): " GIT_EMAIL
-else
-    print_info "Using existing Git email: $GIT_EMAIL"
-    read -p "Press Enter to use this email, or type a new one: " NEW_EMAIL
-    if [ ! -z "$NEW_EMAIL" ]; then
-        GIT_EMAIL="$NEW_EMAIL"
-    fi
-fi
-
-# Configure git
-print_info "Configuring Git..."
-git config --global user.name "$GIT_NAME"
-git config --global user.email "$GIT_EMAIL"
-print_success "Git configured with name: $GIT_NAME and email: $GIT_EMAIL"
+print_success "Using Git config from dotfiles:"
+print_info "Name: $GIT_NAME"
+print_info "Email: $GIT_EMAIL"
 
 # SSH Key Generation
 print_header "SSH Key Setup"
