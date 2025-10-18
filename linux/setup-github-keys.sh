@@ -27,26 +27,46 @@ print_header() { echo -e "\n${CYAN}========================================${NC}
 
 print_header "GitHub SSH & GPG Keys Setup"
 
-# Check if gh CLI is installed
-if ! command -v gh &> /dev/null; then
-    print_error "GitHub CLI (gh) is not installed"
-    print_info "Install it with: sudo apt-get install gh"
-    exit 1
-fi
+# Check and install required tools
+print_info "Checking required tools..."
 
 # Check if git is installed
 if ! command -v git &> /dev/null; then
-    print_error "Git is not installed"
-    print_info "Install it with: sudo apt-get install git"
-    exit 1
+    print_info "Installing Git..."
+    sudo apt-get update -qq
+    sudo apt-get install -y git
+    print_success "Git installed"
+else
+    print_success "Git is already installed"
 fi
 
 # Check if gpg is installed
 if ! command -v gpg &> /dev/null; then
-    print_error "GPG is not installed"
-    print_info "Install it with: sudo apt-get install gnupg"
-    exit 1
+    print_info "Installing GPG..."
+    sudo apt-get install -y gnupg
+    print_success "GPG installed"
+else
+    print_success "GPG is already installed"
 fi
+
+# Check if gh CLI is installed
+if ! command -v gh &> /dev/null; then
+    print_info "Installing GitHub CLI (gh)..."
+    
+    # Add GitHub CLI repository
+    sudo mkdir -p /etc/apt/keyrings
+    wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    
+    sudo apt-get update -qq
+    sudo apt-get install -y gh
+    print_success "GitHub CLI installed"
+else
+    print_success "GitHub CLI is already installed"
+fi
+
+echo ""
 
 # Get user information
 print_header "User Information"
