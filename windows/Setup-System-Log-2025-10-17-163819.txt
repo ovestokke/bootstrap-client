@@ -167,3 +167,577 @@ Available setup scripts:
   [7] Run core setup        → Automated workflow (1→2→3→4)
   [0] Exit                  → Manual setup
 
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+ ovsto@Ares D:\....\bootstrap-client  master 
+PS>.\init-windows.ps1
+
+========================================
+Bootstrap Client Initialization
+========================================
+
+[OK] Running as Administrator
+
+[OK] Execution policy set to Unrestricted
+
+========================================
+Git Installation
+========================================
+
+[OK] Git is already installed: git version 2.51.0.windows.2
+
+========================================
+Repository Setup
+========================================
+
+✓ Running from repository: D:\Github\bootstrap-client
+✓ Confirmed: bootstrap-client repository
+
+
+Pulling latest changes...
+
+[OK] Repository updated
+
+
+========================================
+Setup Workflow Options
+========================================
+
+Available setup scripts:
+  [1] System cleanup        → Remove bloatware, configure privacy, enable WSL
+  [2] Install apps          → Choose app categories (Basic/Gaming/Developer/Full)
+  [3] Setup essentials      → Install Git + chezmoi, initialize dotfiles
+  [4] Install packages      → Dev tools (WezTerm, Neovim, etc.)
+  [5] Apply dotfiles        → Run chezmoi apply
+  [6] PowerShell profile    → Configure PowerShell (optional)
+  [7] Komorebi WM           → Install tiling window manager (optional)
+  [8] Run full workflow     → Automated setup (1→2→3→4→5)
+  [0] Exit                  → Manual setup
+
+
+Launching Setup-System.ps1...
+Transcript started, output file is D:\Github\bootstrap-client\windows\Setup-System-Log-2025-10-17-165157.log
+Logging to: D:\Github\bootstrap-client\windows\Setup-System-Log-2025-10-17-165157.log
+
+========================================
+Computer Hostname Configuration
+========================================
+
+Current hostname: ARES
+
+[SKIP] Keeping current computer name: ARES
+
+========================================
+System Restore Configuration
+========================================
+
+[OK] System Restore is already enabled
+
+Creating restore point before system changes...
+PS>TerminatingError(): "The pipeline has been stopped."
+[SKIP] Restore point already created in the last 24 hours
+  → Created: 20251016171926.228856-000
+
+========================================
+Removing Bloatware...
+========================================
+Attempting to remove: Microsoft.549981C3F5F10
+  - Not installed: Microsoft.549981C3F5F10
+Attempting to remove: Microsoft.MicrosoftOfficeHub
+  - Not installed: Microsoft.MicrosoftOfficeHub
+Attempting to remove: Microsoft.WindowsFeedbackHub
+  - Not installed: Microsoft.WindowsFeedbackHub
+Attempting to remove: Microsoft.GetHelp
+  - Not installed: Microsoft.GetHelp
+Attempting to remove: Microsoft.Getstarted
+  - Not installed: Microsoft.Getstarted
+Attempting to remove: Microsoft.People
+  - Not installed: Microsoft.People
+Attempting to remove: Microsoft.WindowsCamera
+  - Not installed: Microsoft.WindowsCamera
+Attempting to remove: Microsoft.WindowsMaps
+  - Not installed: Microsoft.WindowsMaps
+Attempting to remove: Microsoft.ZuneMusic
+  - Not installed: Microsoft.ZuneMusic
+Attempting to remove: Microsoft.ZuneVideo
+  - Not installed: Microsoft.ZuneVideo
+Attempting to remove: Microsoft.MicrosoftSolitaireCollection
+  - Not installed: Microsoft.MicrosoftSolitaireCollection
+Attempting to remove: Microsoft.MixedReality.Portal
+  - Not installed: Microsoft.MixedReality.Portal
+Attempting to remove: Microsoft.SkypeApp
+  - Not installed: Microsoft.SkypeApp
+
+========================================
+Configuring Privacy Settings...
+========================================
+  [OK] Set AllowTelemetry in HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+  [OK] Set DisableSearchBoxSuggestions in HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+  [OK] Set AllowCortana in HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+  [OK] Set EnableActivityFeed in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+  [OK] Set PublishUserActivities in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+  [OK] Set UploadUserActivities in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+
+========================================
+Configuring UI/UX Settings...
+========================================
+  [OK] Set HideFileExt in HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+  [OK] Set Hidden in HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+
+========================================
+Enabling Developer Mode...
+========================================
+  [OK] Set AllowDevelopmentWithoutDevLicense in HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
+
+========================================
+WSL Installation
+========================================
+
+[OK] WSL is already installed
+[OK] Ubuntu distribution is already installed
+
+After completing this script, configure WSL by running:
+  1. wsl -d Ubuntu
+  2. cd /mnt/c/path/to/bootstrap-client
+  3. bash linux/Setup-Zsh-Linux.sh
+  4. bash linux/Setup-GitHubKeys.sh
+
+========================================
+NVIDIA App Installation
+========================================
+
+Detecting NVIDIA GPU...
+[OK] NVIDIA GPU detected:
+  → NVIDIA GeForce RTX 4070 Ti SUPER
+
+
+[SKIP] Skipping NVIDIA App installation
+You can download manually from: https://www.nvidia.com/en-us/software/nvidia-app/
+
+========================================
+Additional Setup Available
+========================================
+
+Recommended next steps:
+  1. Setup-Essentials.ps1 - Install Git + chezmoi (init dotfiles)
+  2. Setup-Packages.ps1   - Install development tools (WezTerm, Neovim, etc.)
+  3. chezmoi apply        - Apply your dotfiles configuration
+
+Optional scripts:
+  - Setup-PowerShell.ps1  - PowerShell profile (if not using chezmoi)
+  - Setup-Komorebi.ps1    - Tiling window manager
+
+ ovsto@Ares D:\....\bootstrap-client  master 
+PS>.\init-windows.ps1
+
+========================================
+Bootstrap Client Initialization
+========================================
+
+[OK] Running as Administrator
+
+[OK] Execution policy set to Unrestricted
+
+========================================
+Git Installation
+========================================
+
+[OK] Git is already installed: git version 2.51.0.windows.2
+
+========================================
+Repository Setup
+========================================
+
+✓ Running from repository: D:\Github\bootstrap-client
+✓ Confirmed: bootstrap-client repository
+
+[SKIP] Using current version
+
+
+========================================
+Setup Workflow Options
+========================================
+
+Available setup scripts:
+  [1] System cleanup        → Remove bloatware, configure privacy, enable WSL
+  [2] Install apps          → Choose app categories (Basic/Gaming/Developer/Full)
+  [3] Setup essentials      → Install Git + chezmoi, initialize dotfiles
+  [4] Install packages      → Dev tools (WezTerm, Neovim, etc.)
+  [5] Apply dotfiles        → Run chezmoi apply
+  [6] PowerShell profile    → Configure PowerShell (optional)
+  [7] Komorebi WM           → Install tiling window manager (optional)
+  [8] Run full workflow     → Automated setup (1→2→3→4→5)
+  [0] Exit                  → Manual setup
+
+
+Launching Setup-Apps.ps1...
+
+========================================
+Windows Application Installation
+========================================
+
+[OK] Running as Administrator
+
+Transcript started, output file is D:\Github\bootstrap-client\windows\Setup-Apps-Log-2025-10-17-165235.log
+Logging to: D:\Github\bootstrap-client\windows\Setup-Apps-Log-2025-10-17-165235.log
+
+========================================
+Application Installation Options
+========================================
+
+Choose installation mode:
+  [1] Skip       - No apps (exit script)
+  [2] Basic      - Essential apps only (~10 apps)
+  [3] Gaming     - Basic + Gaming platforms + peripherals + monitoring
+  [4] Developer  - Basic + Development tools
+  [5] Full       - Everything (Basic + Gaming + Developer + Productivity)
+
+
+========================================
+Installing Applications via winget...
+========================================
+
+Mode: BASIC installation
+Loading applications from:
+  • Apps-List-Basic.txt
+
+Found 9 unique applications to install
+
+
+========================================
+[1/9] Installing: Mozilla.Firefox
+Time: 16:52:40
+  Running winget install...
+  [SKIP] Already installed: Mozilla.Firefox
+  Duration: 3s
+
+========================================
+[2/9] Installing: Git.Git
+Time: 16:52:43
+  Running winget install...
+  [SKIP] Already installed: Git.Git
+  Duration: 2s
+
+========================================
+[3/9] Installing: GitHub.cli
+Time: 16:52:45
+  Running winget install...
+  [SKIP] Already installed: GitHub.cli
+  Duration: 2s
+
+========================================
+[4/9] Installing: Microsoft.VisualStudioCode
+Time: 16:52:47
+  Running winget install...
+  [SKIP] Already installed: Microsoft.VisualStudioCode
+  Duration: 2s
+
+========================================
+[5/9] Installing: Microsoft.WindowsTerminal
+Time: 16:52:49
+  Running winget install...
+  [SKIP] Already installed: Microsoft.WindowsTerminal
+  Duration: 2s
+
+========================================
+[6/9] Installing: Microsoft.PowerShell
+Time: 16:52:51
+  Running winget install...
+  [SKIP] Already installed: Microsoft.PowerShell
+  Duration: 2s
+
+========================================
+[7/9] Installing: AgileBits.1Password
+Time: 16:52:53
+  Running winget install...
+  [SKIP] Already installed: AgileBits.1Password
+  Duration: 2s
+
+========================================
+[8/9] Installing: 7zip.7zip
+Time: 16:52:55
+  Running winget install...
+  [SKIP] Already installed: 7zip.7zip
+  Duration: 1s
+
+========================================
+[9/9] Installing: OO-Software.ShutUp10
+Time: 16:52:56
+  Running winget install...
+  [SKIP] Already installed: OO-Software.ShutUp10
+  Duration: 1s
+
+========================================
+Installation Summary
+========================================
+Total apps: 9
+Successful: 9
+Failed: 0
+
+Transcript stopped, output file is D:\Github\bootstrap-client\windows\Setup-Apps-Log-2025-10-17-165235.log
+ ovsto@Ares D:\....\bootstrap-client  master 
+PS>.\init-windows.ps1
+
+========================================
+Bootstrap Client Initialization
+========================================
+
+[OK] Running as Administrator
+
+[OK] Execution policy set to Unrestricted
+
+========================================
+Git Installation
+========================================
+
+[OK] Git is already installed: git version 2.51.0.windows.2
+
+========================================
+Repository Setup
+========================================
+
+✓ Running from repository: D:\Github\bootstrap-client
+✓ Confirmed: bootstrap-client repository
+
+[SKIP] Using current version
+
+
+========================================
+Setup Workflow Options
+========================================
+
+Available setup scripts:
+  [1] System cleanup        → Remove bloatware, configure privacy, enable WSL
+  [2] Install apps          → Choose app categories (Basic/Gaming/Developer/Full)
+  [3] Setup essentials      → Install Git + chezmoi, initialize dotfiles
+  [4] Install packages      → Dev tools (WezTerm, Neovim, etc.)
+  [5] Apply dotfiles        → Run chezmoi apply
+  [6] PowerShell profile    → Configure PowerShell (optional)
+  [7] Komorebi WM           → Install tiling window manager (optional)
+  [8] Run full workflow     → Automated setup (1→2→3→4→5)
+  [0] Exit                  → Manual setup
+
+
+Launching Setup-Packages.ps1...
+
+========================================
+Windows Packages Setup
+========================================
+
+[OK] Running as Administrator
+
+Transcript started, output file is D:\Github\bootstrap-client\windows\Setup-Packages-Log-2025-10-17-165311.log
+Logging to: D:\Github\bootstrap-client\windows\Setup-Packages-Log-2025-10-17-165311.log
+
+========================================
+WezTerm Terminal Installation
+========================================
+
+[OK] WezTerm is already installed
+
+→ Configuration: .wezterm.lua should be managed by chezmoi
+
+========================================
+Meslo Nerd Font Installation
+========================================
+
+→ Installing Meslo Nerd Font...
+→ Downloading MesloLGS NF Regular.ttf...
+→ Installing MesloLGS NF Regular.ttf...
+[OK] Installed MesloLGS NF Regular.ttf
+→ Downloading MesloLGS NF Bold.ttf...
+→ Installing MesloLGS NF Bold.ttf...
+[OK] Installed MesloLGS NF Bold.ttf
+→ Downloading MesloLGS NF Italic.ttf...
+→ Installing MesloLGS NF Italic.ttf...
+[OK] Installed MesloLGS NF Italic.ttf
+→ Downloading MesloLGS NF Bold Italic.ttf...
+→ Installing MesloLGS NF Bold Italic.ttf...
+[OK] Installed MesloLGS NF Bold Italic.ttf
+[OK] Meslo Nerd Font installation complete
+
+========================================
+WSL Setup
+========================================
+
+[OK] Found 1 WSL distribution(s):
+  • Ubuntu
+
+----------------------------------------
+Setting up: Ubuntu
+----------------------------------------
+
+→ Installing Zsh and Oh My Zsh in Ubuntu...
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+ ovsto@Ares D:\....\windows  master 
+PS>.\init-windows.ps1
+.\init-windows.ps1: The term '.\init-windows.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+.\init-windows.ps1: The term '.\init-windows.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+ ovsto@Ares D:\....\windows  master 
+PS>cd ..
+ ovsto@Ares D:\....\bootstrap-client  master 
+PS>.\init-windows.ps1
+
+========================================
+Bootstrap Client Initialization
+========================================
+
+[OK] Running as Administrator
+
+[OK] Execution policy set to Unrestricted
+
+========================================
+Git Installation
+========================================
+
+[OK] Git is already installed: git version 2.51.0.windows.2
+
+========================================
+Repository Setup
+========================================
+
+✓ Running from repository: D:\Github\bootstrap-client
+✓ Confirmed: bootstrap-client repository
+
+
+Pulling latest changes...
+
+[OK] Repository updated
+
+
+========================================
+Setup Workflow Options
+========================================
+
+Available setup scripts:
+  [1] System cleanup        → Remove bloatware, configure privacy, enable WSL
+  [2] Install apps          → Choose app categories (Basic/Gaming/Developer/Full)
+  [3] Setup essentials      → Install Git + chezmoi, initialize dotfiles
+  [4] Install packages      → Dev tools (WezTerm, Neovim, etc.)
+  [5] Apply dotfiles        → Run chezmoi apply
+  [6] PowerShell profile    → Configure PowerShell (optional)
+  [7] Komorebi WM           → Install tiling window manager (optional)
+  [8] Run full workflow     → Automated setup (1→2→3→4→5)
+  [0] Exit                  → Manual setup
+
+
+Launching Setup-System.ps1...
+Transcript started, output file is D:\Github\bootstrap-client\windows\Setup-System-Log-2025-10-18-210701.log
+Logging to: D:\Github\bootstrap-client\windows\Setup-System-Log-2025-10-18-210701.log
+
+========================================
+Computer Hostname Configuration
+========================================
+
+Current hostname: ARES
+
+[SKIP] Keeping current computer name: ARES
+
+========================================
+System Restore Configuration
+========================================
+
+[OK] System Restore is already enabled
+
+Creating restore point before system changes...
+PS>TerminatingError(): "The pipeline has been stopped."
+[SKIP] Restore point already created in the last 24 hours
+  → Created: 20251016171926.228856-000
+
+========================================
+Removing Bloatware...
+========================================
+Attempting to remove: Microsoft.549981C3F5F10
+  - Not installed: Microsoft.549981C3F5F10
+Attempting to remove: Microsoft.MicrosoftOfficeHub
+  - Not installed: Microsoft.MicrosoftOfficeHub
+Attempting to remove: Microsoft.WindowsFeedbackHub
+  - Not installed: Microsoft.WindowsFeedbackHub
+Attempting to remove: Microsoft.GetHelp
+  - Not installed: Microsoft.GetHelp
+Attempting to remove: Microsoft.Getstarted
+  - Not installed: Microsoft.Getstarted
+Attempting to remove: Microsoft.People
+  - Not installed: Microsoft.People
+Attempting to remove: Microsoft.WindowsCamera
+  - Not installed: Microsoft.WindowsCamera
+Attempting to remove: Microsoft.WindowsMaps
+  - Not installed: Microsoft.WindowsMaps
+Attempting to remove: Microsoft.ZuneMusic
+  - Not installed: Microsoft.ZuneMusic
+Attempting to remove: Microsoft.ZuneVideo
+  - Not installed: Microsoft.ZuneVideo
+Attempting to remove: Microsoft.MicrosoftSolitaireCollection
+  - Not installed: Microsoft.MicrosoftSolitaireCollection
+Attempting to remove: Microsoft.MixedReality.Portal
+  - Not installed: Microsoft.MixedReality.Portal
+Attempting to remove: Microsoft.SkypeApp
+  - Not installed: Microsoft.SkypeApp
+
+========================================
+Configuring Privacy Settings...
+========================================
+  [OK] Set AllowTelemetry in HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+  [OK] Set DisableSearchBoxSuggestions in HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+  [OK] Set AllowCortana in HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+  [OK] Set EnableActivityFeed in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+  [OK] Set PublishUserActivities in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+  [OK] Set UploadUserActivities in HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+
+========================================
+Configuring UI/UX Settings...
+========================================
+  [OK] Set HideFileExt in HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+  [OK] Set Hidden in HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+
+========================================
+Enabling Developer Mode...
+========================================
+  [OK] Set AllowDevelopmentWithoutDevLicense in HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
+
+========================================
+WSL Installation
+========================================
+
+[OK] WSL is already installed
+[OK] Ubuntu distribution is already installed
+
+After completing this script, configure WSL by running:
+  1. wsl -d Ubuntu
+  2. cd /mnt/c/path/to/bootstrap-client
+  3. bash linux/Setup-Zsh-Linux.sh
+  4. bash linux/Setup-GitHubKeys.sh
+
+========================================
+NVIDIA App Installation
+========================================
+
+Detecting NVIDIA GPU...
+[OK] NVIDIA GPU detected:
+  → NVIDIA GeForce RTX 4070 Ti SUPER
+
+
+[SKIP] Skipping NVIDIA App installation
+You can download manually from: https://www.nvidia.com/en-us/software/nvidia-app/
+
+========================================
+Next Steps
+========================================
+
+Recommended workflow:
+  1. Setup-Apps.ps1       - Install applications (Basic/Gaming/Developer/Full)
+  2. Setup-Essentials.ps1 - Install Git + chezmoi (init dotfiles)
+  3. Setup-Packages.ps1   - Install development tools (WezTerm, Neovim, etc.)
+  4. chezmoi apply        - Apply your dotfiles configuration
+
+Optional:
+  - Setup-PowerShell.ps1  - PowerShell profile (if not using chezmoi)
+  - Setup-Komorebi.ps1    - Tiling window manager
+
+ ovsto@Ares D:\....\bootstrap-client  master 

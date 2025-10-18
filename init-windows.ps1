@@ -253,7 +253,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Available setup scripts:" -ForegroundColor Yellow
-Write-Host "  [1] System cleanup        → Remove bloatware, configure privacy, enable WSL" -ForegroundColor White
+Write-Host "  [1] System setup          → Remove bloatware, configure privacy, enable WSL" -ForegroundColor White
 Write-Host "  [2] Install apps          → Choose app categories (Basic/Gaming/Developer/Full)" -ForegroundColor White
 Write-Host "  [3] Setup essentials      → Install Git + chezmoi, initialize dotfiles" -ForegroundColor White
 Write-Host "  [4] Install packages      → Dev tools (WezTerm, Neovim, etc.)" -ForegroundColor White

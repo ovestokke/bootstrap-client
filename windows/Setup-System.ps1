@@ -1,5 +1,5 @@
 #
-# Windows 10/11 System Cleanup Script
+# Windows 10/11 System Setup Script
 #
 # @author: Ovestokke
 # @version: 2.0
