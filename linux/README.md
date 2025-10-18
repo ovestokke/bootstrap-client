@@ -1,109 +1,242 @@
-# Linux/Ubuntu Setup Scripts
+# Linux Setup Scripts
 
-Bash scripts for Linux/Ubuntu and WSL development environment setup.
+Bash scripts for Linux development environment setup.
 
-## Scripts
+**Requirements:** apt package manager (Debian/Ubuntu-based distributions)  
+**Supported:** Ubuntu, Debian, WSL (Ubuntu/Debian), Linux Mint, Pop!_OS, etc.
 
-### Setup-GitHubKeys.sh
-Generates and uploads SSH/GPG keys to GitHub.
+## Quick Start
 
-- Generates SSH ed25519 key
-- Generates GPG 4096-bit RSA key
-- Configures Git to auto-sign commits
-- Uploads keys to GitHub via `gh` CLI
+### Option 1: Automated Setup (Recommended)
 
-**Prerequisites:**
-- Git installed
-- GitHub CLI (`gh`) installed: `sudo apt install gh`
-- GPG installed: `sudo apt install gnupg`
+Run from the repository root:
 
-**Usage:**
 ```bash
-bash linux/Setup-GitHubKeys.sh
+bash init-linux.sh
 ```
 
-**Time:** 10 minutes
+This offers:
+1. **setup-packages.sh** - Install all packages (comprehensive)
+2. **setup-essentials.sh** - Install Git + chezmoi only
+3. **setup-github-keys.sh** - Generate and upload SSH/GPG keys
+4. **Run full setup** - Automated workflow (1→2→3)
+
+### Option 2: Remote Installation
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/init-linux.sh | bash
+```
 
 ---
 
-### Setup-Zsh-Linux.sh
-**Main Zsh setup script** - Oh My Zsh-based approach
+## Core Scripts
 
-- Installs Zsh (if not already installed)
-- Installs Oh My Zsh framework
-- Installs Powerlevel10k theme (git clone)
-- Installs zsh-autosuggestions plugin (git clone)
-- Installs zsh-syntax-highlighting plugin (git clone)
-- Configures history search with arrow keys
-- Installs eza (better ls) with fallback to third-party repository
-- Installs zoxide (better cd) with fallback to curl installer
-- Installs Meslo Nerd Font to `~/.local/share/fonts`
+### setup-packages.sh
+**Comprehensive package installation** - Install everything you need
 
-**Compatible with:**
-- Ubuntu 20.04+
-- Debian 10+
-- WSL (Windows Subsystem for Linux)
-- Other Debian-based distributions
+Installs:
+- **Zsh + Oh My Zsh + Powerlevel10k** - Modern shell with beautiful prompt
+- **Zsh plugins** - autosuggestions, syntax-highlighting
+- **Modern CLI tools** - eza, zoxide, fzf, ripgrep, fd, bat
+- **Neovim** (latest via PPA) + dependencies (lazygit, build-essential)
+- **GitHub CLI** (gh) + GPG (for commit signing)
+- **chezmoi** - Dotfiles manager
+- **Meslo Nerd Font** - Font with icon support
 
 **Usage:**
 ```bash
-bash linux/Setup-Zsh-Linux.sh
-```
-
-**After running:**
-```bash
-# Change default shell to Zsh (if prompted)
-chsh -s $(which zsh)
-
-# Logout and login, or restart terminal
-# Then run Powerlevel10k configuration wizard
-p10k configure
+bash linux/setup-packages.sh
 ```
 
 **Time:** 15-20 minutes
 
 ---
 
-### Setup-WSL.sh
-**Legacy WSL setup script** - Use `Setup-Zsh-Linux.sh` instead
+### setup-essentials.sh
+**Minimal setup** - Git + chezmoi only
 
-This is the original WSL setup script. It's functionally equivalent to `Setup-Zsh-Linux.sh` but less generic.
+For when you want to manage everything else via dotfiles.
 
-**Recommendation:** Use `Setup-Zsh-Linux.sh` for new setups as it works on any Linux distribution, not just WSL.
-
----
-
-## Running from Windows
-
-If you're setting up WSL from Windows, use the PowerShell wrapper:
-
-```powershell
-# From Windows PowerShell
-cd C:\path\to\FreshWindowsInstall\windows
-.\Setup-Zsh-Windows.ps1
+**Usage:**
+```bash
+bash linux/setup-essentials.sh
 ```
 
-This will:
-1. Detect your WSL distributions
-2. Let you choose which one to configure
-3. Automatically run `linux/Setup-Zsh-Linux.sh` inside WSL
-4. Provide next steps
+**Time:** 2-5 minutes
 
 ---
 
-## Manual Installation in WSL
+### setup-github-keys.sh
+**GitHub SSH & GPG keys setup**
 
-If you prefer to run the script manually inside WSL:
+- Generates SSH ed25519 key
+- Generates GPG 4096-bit RSA key  
+- Configures Git to auto-sign commits
+- Uploads keys to GitHub via `gh` CLI
 
+**Prerequisites:**
+- Git user.name and user.email configured (from chezmoi dotfiles)
+- GitHub CLI, GPG (auto-installed if missing)
+
+**Usage:**
 ```bash
-# From WSL
-cd /mnt/c/path/to/FreshWindowsInstall/linux
-bash Setup-Zsh-Linux.sh
+bash linux/setup-github-keys.sh
+```
+
+**Time:** 10 minutes
+
+---
+
+### setup-zsh-linux.sh
+**Zsh-only setup** - Standalone Zsh configuration script
+
+Use this if you only want to set up Zsh without other tools.
+
+**Installs:**
+- Zsh + Oh My Zsh + Powerlevel10k
+- Zsh plugins (autosuggestions, syntax-highlighting)
+- Modern CLI tools (eza, zoxide)
+- chezmoi (dotfiles manager)
+- Meslo Nerd Font
+
+**Usage:**
+```bash
+bash linux/setup-zsh-linux.sh
+```
+
+**Time:** 10-15 minutes
+
+---
+
+### setup-wsl.sh
+**Legacy WSL setup script** ⚠️ Deprecated
+
+Use `setup-packages.sh` or `setup-zsh-linux.sh` instead. This script is kept for backwards compatibility but is no longer maintained.
+
+---
+
+## Recommended Workflow
+
+### Full Setup (Automated)
+```bash
+# Clone the repository first or use init-linux.sh
+cd ~/bootstrap-client/linux
+
+# Option 1: Run everything
+bash init-linux.sh
+# Choose option 4 (Run full setup)
+
+# Option 2: Step by step
+bash setup-packages.sh     # 1. Install all packages
+bash setup-essentials.sh   # 2. Git + chezmoi (if not using setup-packages.sh)
+chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
+chezmoi apply              # 3. Apply dotfiles
+bash setup-github-keys.sh  # 4. GitHub authentication
+chsh -s $(which zsh)       # 5. Set Zsh as default shell
+```
+
+**Total time:** 20-30 minutes (mostly automated)
+
+---
+
+## What Gets Installed
+
+### Shell Environment
+- **Zsh** - Modern shell with better features than bash
+- **Oh My Zsh** - Plugin framework and configuration management
+- **Powerlevel10k** - Beautiful and highly configurable prompt
+- **zsh-autosuggestions** - Fish-like autosuggestions based on history
+- **zsh-syntax-highlighting** - Syntax highlighting for commands
+
+### Modern CLI Tools
+- **eza** - Better `ls` with colors, icons, and git integration
+- **zoxide** - Smart `cd` that learns your most-used directories
+- **fzf** - Fuzzy finder for files, history, and more
+- **ripgrep (rg)** - Fast grep alternative
+- **fd** - Fast find alternative
+- **bat** - Better `cat` with syntax highlighting
+
+### Development Tools
+- **Neovim** - Modern Vim fork (v0.11.2+)
+- **lazygit** - Terminal UI for git
+- **build-essential** - C/C++ compiler and tools (for Neovim plugins)
+- **GitHub CLI (gh)** - GitHub command-line tool
+- **GPG** - For signing git commits
+- **chezmoi** - Dotfiles management system
+
+### Fonts
+- **Meslo Nerd Font** - Monospace font with icons and ligatures
+
+---
+
+## Configuration Management
+
+**IMPORTANT:** These scripts only install packages. Configuration is managed by chezmoi dotfiles.
+
+### What should be in your dotfiles:
+- `~/.zshrc` - Zsh configuration
+- `~/.zprofile` - Zsh login shell configuration  
+- `~/.config/nvim/` - Neovim configuration (LazyVim)
+- `~/.gitconfig` - Git configuration
+- `~/.wezterm.lua` - WezTerm configuration (if using WezTerm)
+- `~/.p10k.zsh` - Powerlevel10k configuration
+
+### First-time setup:
+```bash
+# Initialize chezmoi with your dotfiles
+chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
+
+# Review what will be changed
+chezmoi diff
+
+# Apply your dotfiles
+chezmoi apply
+
+# Run Powerlevel10k configuration (first time only)
+p10k configure
+```
+
+---
+
+## After Installation
+
+### 1. Set Zsh as default shell
+```bash
+chsh -s $(which zsh)
+# Logout and login, or restart terminal
+```
+
+### 2. Configure Powerlevel10k (first time only)
+```bash
+p10k configure
+```
+
+Choose your preferred style (lean or rainbow recommended for coolnight theme).
+
+### 3. Test installations
+```bash
+# Modern CLI tools
+ls           # Should use eza with icons
+z ~/          # Should use zoxide smart cd
+fzf          # Should open fuzzy finder
+nvim         # Should open Neovim
+
+# Check versions
+nvim --version
+lazygit --version
+gh --version
+chezmoi --version
 ```
 
 ---
 
 ## Updating Tools
+
+### Update system packages
+```bash
+sudo apt update
+sudo apt upgrade
+```
 
 ### Update Oh My Zsh
 ```bash
@@ -116,7 +249,7 @@ cd ~/.oh-my-zsh/custom/themes/powerlevel10k
 git pull
 ```
 
-### Update Plugins
+### Update Zsh plugins
 ```bash
 # zsh-autosuggestions
 cd ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -127,53 +260,16 @@ cd ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 git pull
 ```
 
-### Update CLI Tools
+### Update Neovim
 ```bash
-# Check if available via apt
 sudo apt update
-sudo apt upgrade eza zoxide
-
-# Or reinstall via curl (zoxide)
-curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+sudo apt upgrade neovim
 ```
 
----
-
-## What Gets Installed
-
-### Zsh Components
-- **Zsh** - Modern shell
-- **Oh My Zsh** - Plugin framework
-- **Powerlevel10k** - Beautiful prompt theme
-- **zsh-autosuggestions** - Fish-like autosuggestions
-- **zsh-syntax-highlighting** - Command syntax highlighting
-
-### Modern CLI Tools
-- **eza** - Better `ls` with colors and icons
-- **zoxide** - Smart `cd` that learns your habits
-
-### Fonts
-- **Meslo Nerd Font** - Font with icon support for terminal
-
-### Configuration
-- History search with arrow keys
-- Unified aliases (`ls` → eza, `cd` → zoxide)
-- Shared history between sessions
-
----
-
-## Differences from macOS Setup
-
-| Feature | Linux/WSL | macOS |
-|---------|-----------|-------|
-| Package Manager | apt + git clone | Homebrew |
-| Framework | Oh My Zsh | None (direct sourcing) |
-| P10k Install | `git clone` | `brew install` |
-| Plugins | Oh My Zsh plugins | Source in `.zshrc` |
-| Font Install | `~/.local/share/fonts` | `brew install --cask` |
-| Updates | `git pull` + `apt` | `brew upgrade` |
-
-Both approaches result in the same functionality, just using platform-appropriate tools.
+### Update chezmoi dotfiles
+```bash
+chezmoi update
+```
 
 ---
 
@@ -182,7 +278,7 @@ Both approaches result in the same functionality, just using platform-appropriat
 ### Zsh not default shell
 ```bash
 chsh -s $(which zsh)
-# Logout and login
+# Then logout and login
 ```
 
 ### Plugins not working
@@ -190,38 +286,62 @@ chsh -s $(which zsh)
 # Verify plugins are installed
 ls ~/.oh-my-zsh/custom/plugins/
 
-# Verify .zshrc configuration
+# Check .zshrc configuration
 grep "plugins=" ~/.zshrc
-
 # Should show: plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 ```
 
-### eza or zoxide not found
+### Command not found (eza, zoxide, etc.)
 ```bash
 # Check if installed
 command -v eza
 command -v zoxide
 
-# Reinstall if needed
-sudo apt-get update
-sudo apt-get install eza zoxide
+# Check PATH
+echo $PATH | grep -o ".local/bin"
+
+# Add to PATH if needed (should be in dotfiles)
+export PATH="$HOME/.local/bin:$PATH"
 ```
 
-### Icons not showing
+### Icons not showing in terminal
 ```bash
 # Verify font is installed
 fc-list | grep -i meslo
 
-# Ensure terminal uses Meslo Nerd Font
-# In WezTerm: config.font = wezterm.font("MesloLGS NF")
+# Make sure your terminal uses Meslo Nerd Font
+# For WezTerm: set in .wezterm.lua
+# For other terminals: check terminal preferences
+```
+
+### Neovim version too old
+```bash
+# Check version
+nvim --version
+
+# If < 0.11.2, update from PPA
+sudo apt update
+sudo apt upgrade neovim
+```
+
+### Git config not found (for setup-github-keys.sh)
+```bash
+# Check git config
+git config --global user.name
+git config --global user.email
+
+# Should come from chezmoi dotfiles
+# If empty, initialize and apply dotfiles:
+chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
+chezmoi apply
 ```
 
 ---
 
 ## See Also
 
+- `../init-linux.sh` - Automated initialization script
 - `../SETUP-GUIDE.md` - Complete setup guide
 - `../Setup-Zsh-README.md` - Detailed Zsh setup documentation
-- `../windows/Setup-Zsh-Windows.ps1` - Windows wrapper script
-- `../windows/` - Windows scripts
-- `../macos/` - macOS scripts
+- `../windows/` - Windows setup scripts
+- `../macos/` - macOS setup scripts
