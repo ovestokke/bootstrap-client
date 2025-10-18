@@ -346,8 +346,8 @@ echo ""
 
 print_header "Meslo Nerd Font"
 
-mkdir -p ~/.local/share/fonts
-FONT_DIR=~/.local/share/fonts
+mkdir -p "$HOME/.local/share/fonts"
+FONT_DIR="$HOME/.local/share/fonts"
 
 FONTS=(
     "MesloLGS NF Regular.ttf"

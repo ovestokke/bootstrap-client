@@ -198,7 +198,7 @@ fi
 print_header "Zsh Plugins Installation"
 
 # Install zsh-autosuggestions plugin
-AUTOSUGGESTIONS_DIR="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+AUTOSUGGESTIONS_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
 if [ -d "$AUTOSUGGESTIONS_DIR" ]; then
     print_warning "zsh-autosuggestions already installed"
 else
@@ -212,7 +212,7 @@ else
 fi
 
 # Install zsh-syntax-highlighting plugin
-SYNTAX_HIGHLIGHTING_DIR="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+SYNTAX_HIGHLIGHTING_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
 if [ -d "$SYNTAX_HIGHLIGHTING_DIR" ]; then
     print_warning "zsh-syntax-highlighting already installed"
 else
@@ -337,8 +337,8 @@ print_info "Configure dotfiles with: chezmoi init https://github.com/YOUR_USERNA
 
 print_header "Meslo Nerd Font Installation"
 
-mkdir -p ~/.local/share/fonts
-FONT_DIR=~/.local/share/fonts
+mkdir -p "$HOME/.local/share/fonts"
+FONT_DIR="$HOME/.local/share/fonts"
 
 print_info "Installing Meslo Nerd Font..."
 
