@@ -311,6 +311,28 @@ fi
 
 #endregion
 
+#region Install chezmoi
+
+print_header "chezmoi Installation"
+
+if command -v chezmoi &> /dev/null; then
+    print_success "chezmoi is already installed"
+else
+    print_info "Installing chezmoi..."
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+    
+    # Add to PATH if not already there
+    if ! grep -q '$HOME/.local/bin' ~/.zshrc; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+    fi
+    
+    print_success "chezmoi installed"
+fi
+
+print_info "Configure dotfiles with: chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git"
+
+#endregion
+
 #region Install Meslo Nerd Font
 
 print_header "Meslo Nerd Font Installation"
