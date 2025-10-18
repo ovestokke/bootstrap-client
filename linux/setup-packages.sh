@@ -1,12 +1,15 @@
 #!/bin/bash
 #
-# Linux/WSL Packages Installation Script
+# Linux Packages Installation Script
 #
 # @author: Ovestokke
 # @version: 1.0
 #
 # This script installs development tools and applications.
 # Configuration is managed by chezmoi - this script only installs packages.
+#
+# Requirements: apt package manager (Debian/Ubuntu-based distributions)
+# Supported: Ubuntu, Debian, WSL (Ubuntu/Debian), Linux Mint, Pop!_OS, etc.
 #
 # Installed packages:
 # - Zsh + Oh My Zsh + Powerlevel10k
@@ -40,10 +43,20 @@ print_header() {
     echo -e "${CYAN}========================================${NC}"
 }
 
-print_header "Linux/WSL Packages Installation"
+print_header "Linux Packages Installation"
 echo ""
 print_warning "This script installs packages only"
 print_info "Configuration is managed by chezmoi"
+echo ""
+
+# Check for apt package manager
+if ! command -v apt-get &> /dev/null; then
+    print_error "This script requires apt package manager (Debian/Ubuntu-based distributions)"
+    print_info "Supported: Ubuntu, Debian, WSL with Ubuntu/Debian, Linux Mint, Pop!_OS, etc."
+    exit 1
+fi
+
+print_success "apt package manager detected"
 echo ""
 
 #region System Update

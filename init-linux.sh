@@ -1,9 +1,12 @@
 #!/bin/bash
 #
-# Bootstrap Client Initialization Script for Linux/Ubuntu
+# Bootstrap Client Initialization Script for Linux
 #
 # @author: Ovestokke
 # @version: 1.0
+#
+# Requirements: apt package manager (Debian/Ubuntu-based distributions)
+# Supported: Ubuntu, Debian, WSL (Ubuntu/Debian), Linux Mint, Pop!_OS, etc.
 #
 # This script automates the initial setup:
 # 1. Installs Git via apt
@@ -11,8 +14,8 @@
 # 3. Launches the setup scripts
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/YOUR-USERNAME/bootstrap-client/master/Init-Linux.sh | bash
-#   OR save this file and run: bash Init-Linux.sh
+#   curl -fsSL https://raw.githubusercontent.com/YOUR-USERNAME/bootstrap-client/master/init-linux.sh | bash
+#   OR save this file and run: bash init-linux.sh
 #
 
 set -e
@@ -32,19 +35,14 @@ print_header() { echo -e "\n${CYAN}========================================${NC}
 
 print_header "Bootstrap Client Initialization for Linux"
 
-# Detect environment
-if grep -qi microsoft /proc/version 2>/dev/null; then
-    ENV_TYPE="WSL"
-    print_info "Detected environment: WSL"
-elif [[ -f /etc/os-release ]]; then
-    . /etc/os-release
-    ENV_TYPE="$ID"
-    print_info "Detected environment: $NAME"
-else
-    ENV_TYPE="Unknown"
-    print_warning "Could not detect environment"
+# Check for apt package manager
+if ! command -v apt-get &> /dev/null; then
+    print_error "This script requires apt package manager (Debian/Ubuntu-based distributions)"
+    print_info "Supported: Ubuntu, Debian, WSL with Ubuntu/Debian, Linux Mint, Pop!_OS, etc."
+    exit 1
 fi
 
+print_success "apt package manager detected"
 echo ""
 
 #region Install Git
