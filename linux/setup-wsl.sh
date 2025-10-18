@@ -199,6 +199,25 @@ else
     print_success "zoxide configured"
 fi
 
+# Install chezmoi
+print_header "chezmoi Installation"
+
+if command -v chezmoi &> /dev/null; then
+    print_warning "chezmoi is already installed"
+else
+    print_info "Installing chezmoi..."
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+    
+    # Add to PATH if not already there
+    if ! grep -q '$HOME/.local/bin' ~/.zshrc; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+    fi
+    
+    print_success "chezmoi installed"
+fi
+
+echo ""
+
 # Install Meslo Nerd Font
 print_header "Nerd Font Installation"
 
@@ -239,10 +258,12 @@ echo ""
 print_success "WSL Ubuntu configuration completed successfully!"
 echo ""
 echo -e "${CYAN}Next steps:${NC}"
-echo "  1. Change your default shell to zsh: ${YELLOW}chsh -s \$(which zsh)${NC}"
-echo "  2. Restart your WSL session: ${YELLOW}exit${NC} then ${YELLOW}wsl -d Ubuntu${NC}"
-echo "  3. Run Powerlevel10k configuration wizard: ${YELLOW}p10k configure${NC}"
-echo "  4. Setup GitHub SSH & GPG keys: ${YELLOW}bash Setup-GitHubKeys.sh${NC}"
+echo -e "  1. Initialize chezmoi with your dotfiles: ${YELLOW}chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git${NC}"
+echo -e "  2. Apply your dotfiles: ${YELLOW}chezmoi apply${NC}"
+echo -e "  3. Change your default shell to zsh: ${YELLOW}chsh -s \$(which zsh)${NC}"
+echo -e "  4. Restart your WSL session: ${YELLOW}exit${NC} then ${YELLOW}wsl -d Ubuntu${NC}"
+echo -e "  5. Run Powerlevel10k configuration wizard: ${YELLOW}p10k configure${NC}"
+echo -e "  6. Setup GitHub SSH & GPG keys: ${YELLOW}bash setup-github-keys.sh${NC}"
 echo ""
 echo -e "${CYAN}Reference guide:${NC} https://www.josean.com/posts/how-to-setup-wezterm-terminal"
 echo ""
