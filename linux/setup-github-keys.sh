@@ -66,6 +66,23 @@ else
     print_success "GitHub CLI is already installed"
 fi
 
+# Check if chezmoi is installed
+if ! command -v chezmoi &> /dev/null; then
+    print_info "Installing chezmoi..."
+    
+    # Install chezmoi using the official installer
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+    
+    # Add to PATH if not already there
+    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+    
+    print_success "chezmoi installed"
+else
+    print_success "chezmoi is already installed"
+fi
+
 echo ""
 
 # Get user information from git config (should be set by chezmoi dotfiles)
