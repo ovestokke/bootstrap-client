@@ -199,49 +199,62 @@ cd "$CLONE_LOCATION/linux"
 
 echo ""
 print_info "Available setup scripts:"
-echo "  1. Setup-Zsh-Linux.sh    - Configure Zsh with Powerlevel10k and tools"
-echo "  2. Setup-GitHubKeys.sh   - Generate and upload SSH/GPG keys to GitHub"
-echo "  3. Setup-WSL.sh          - Legacy WSL configuration (use option 1 instead)"
-echo "  4. Run recommended scripts (1 & 2)"
+echo "  1. setup-packages.sh     - Install all packages (Zsh, Neovim, CLI tools, etc.)"
+echo "  2. setup-essentials.sh   - Install Git + chezmoi only"
+echo "  3. setup-github-keys.sh  - Generate and upload SSH/GPG keys to GitHub"
+echo "  4. Run full setup        - Automated workflow (1→2→3)"
 echo ""
 
 read -p "What would you like to do? (1-4 or skip): " SCRIPT_CHOICE
 
 case $SCRIPT_CHOICE in
     1)
-        print_info "Launching Setup-Zsh-Linux.sh..."
+        print_info "Launching setup-packages.sh..."
         echo ""
-        bash Setup-Zsh-Linux.sh
+        bash setup-packages.sh
         ;;
     2)
-        print_info "Launching Setup-GitHubKeys.sh..."
+        print_info "Launching setup-essentials.sh..."
         echo ""
-        bash Setup-GitHubKeys.sh
+        bash setup-essentials.sh
         ;;
     3)
-        print_info "Launching Setup-WSL.sh (legacy)..."
+        print_info "Launching setup-github-keys.sh..."
         echo ""
-        bash Setup-WSL.sh
+        bash setup-github-keys.sh
         ;;
     4)
-        print_info "Running recommended setup scripts..."
+        print_info "Running full setup workflow..."
         echo ""
         
-        print_header "Step 1: Zsh Setup"
-        bash Setup-Zsh-Linux.sh
+        print_header "Step 1/3: Package Installation"
+        bash setup-packages.sh
         
-        print_header "Step 2: GitHub Keys Setup"
-        bash Setup-GitHubKeys.sh
+        print_header "Step 2/3: Essentials (Git + chezmoi)"
+        bash setup-essentials.sh
         
-        print_header "All setup scripts completed!"
+        print_header "Step 3/3: GitHub Keys Setup"
+        bash setup-github-keys.sh
+        
+        print_header "Full Setup Complete!"
+        echo ""
+        print_success "All setup scripts completed successfully!"
+        echo ""
+        print_info "Next steps:"
+        echo "  1. Initialize chezmoi: chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git"
+        echo "  2. Apply dotfiles: chezmoi apply"
+        echo "  3. Set Zsh as default: chsh -s \$(which zsh)"
+        echo "  4. Restart your terminal"
+        echo "  5. Run: p10k configure"
         ;;
     *)
         print_warning "Skipping script execution"
         echo ""
         print_info "To run setup scripts manually:"
         echo "  cd $CLONE_LOCATION/linux"
-        echo "  bash Setup-Zsh-Linux.sh"
-        echo "  bash Setup-GitHubKeys.sh"
+        echo "  bash setup-packages.sh      # Install all packages"
+        echo "  bash setup-essentials.sh    # Git + chezmoi"
+        echo "  bash setup-github-keys.sh   # GitHub authentication"
         ;;
 esac
 
