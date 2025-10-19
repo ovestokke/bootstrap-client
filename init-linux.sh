@@ -191,70 +191,43 @@ echo ""
 
 #region Launch Setup Scripts
 
-print_header "Launch Setup Scripts"
+print_header "Launch Setup"
 
 cd "$CLONE_LOCATION/linux"
 
 echo ""
-print_info "Available setup scripts:"
-echo "  1. setup-packages.sh     - Install all packages (Zsh, Neovim, CLI tools, etc.)"
-echo "  2. setup-essentials.sh   - Install Git + chezmoi only"
-echo "  3. setup-github-keys.sh  - Generate and upload SSH/GPG keys to GitHub"
-echo "  4. Run full setup        - Automated workflow (1→2→3)"
+print_info "Ready to install chezmoi and apply your dotfiles?"
+echo ""
+print_warning "This will:"
+echo "  • Install chezmoi dotfiles manager"
+echo "  • Clone and apply dotfiles from GitHub"
+echo "  • Install all packages (Zsh, Neovim, CLI tools, etc.)"
+echo "  • Configure your shell and development environment"
 echo ""
 
-read -p "What would you like to do? (1-4 or skip): " SCRIPT_CHOICE
+read -p "Continue with setup? (Y/n): " -n 1 -r
+echo
 
-case $SCRIPT_CHOICE in
-    1)
-        print_info "Launching setup-packages.sh..."
-        echo ""
-        bash setup-packages.sh
-        ;;
-    2)
-        print_info "Launching setup-essentials.sh..."
-        echo ""
-        bash setup-essentials.sh
-        ;;
-    3)
-        print_info "Launching setup-github-keys.sh..."
-        echo ""
-        bash setup-github-keys.sh
-        ;;
-    4)
-        print_info "Running full setup workflow..."
-        echo ""
-        
-        print_header "Step 1/3: Package Installation"
-        bash setup-packages.sh
-        
-        print_header "Step 2/3: Essentials (Git + chezmoi)"
-        bash setup-essentials.sh
-        
-        print_header "Step 3/3: GitHub Keys Setup"
-        bash setup-github-keys.sh
-        
-        print_header "Full Setup Complete!"
-        echo ""
-        print_success "All setup scripts completed successfully!"
-        echo ""
-        print_info "Next steps:"
-        echo "  1. Initialize chezmoi: chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git"
-        echo "  2. Apply dotfiles: chezmoi apply"
-        echo "  3. Set Zsh as default: chsh -s \$(which zsh)"
-        echo "  4. Restart your terminal"
-        echo "  5. Run: p10k configure"
-        ;;
-    *)
-        print_warning "Skipping script execution"
-        echo ""
-        print_info "To run setup scripts manually:"
-        echo "  cd $CLONE_LOCATION/linux"
-        echo "  bash setup-packages.sh      # Install all packages"
-        echo "  bash setup-essentials.sh    # Git + chezmoi"
-        echo "  bash setup-github-keys.sh   # GitHub authentication"
-        ;;
-esac
+if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    print_info "Launching setup-essentials.sh..."
+    echo ""
+    bash setup-essentials.sh
+    
+    print_header "Setup Complete!"
+    echo ""
+    print_success "Your development environment is ready!"
+    echo ""
+    print_info "To complete setup:"
+    echo "  1. Restart your terminal or log out/in"
+    echo "  2. Run: p10k configure (for Powerlevel10k theme)"
+    echo ""
+else
+    print_warning "Setup skipped"
+    echo ""
+    print_info "To run setup manually:"
+    echo "  cd $CLONE_LOCATION/linux"
+    echo "  bash setup-essentials.sh"
+fi
 
 echo ""
 print_header "Initialization Complete!"

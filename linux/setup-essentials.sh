@@ -3,12 +3,14 @@
 # Linux Essentials Setup Script
 #
 # @author: Ovestokke
-# @version: 1.0
+# @version: 2.0
 #
-# This script installs foundational tools:
-# - Git version control
-# - chezmoi dotfile manager
-# - Basic system utilities (curl, wget, unzip)
+# This script performs minimal bootstrap setup:
+# - Installs basic system utilities (git, curl, wget, unzip)
+# - Installs and initializes chezmoi with dotfiles
+#
+# All package installation, shell configuration, and dotfile management
+# is handled by chezmoi via .chezmoiscripts
 #
 # Requirements: apt package manager (Debian/Ubuntu-based distributions)
 #
@@ -18,7 +20,6 @@
 
 set -e
 
-# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -37,13 +38,14 @@ print_header() {
 
 print_header "Linux Essentials Setup"
 echo ""
-print_info "This script will install:"
-echo "  • Git (version control)"
-echo "  • chezmoi (dotfile manager)"
-echo "  • Basic utilities (curl, wget, unzip)"
+print_info "This script will:"
+echo "  • Install basic utilities (git, curl, wget, unzip)"
+echo "  • Install chezmoi dotfiles manager"
+echo "  • Initialize your dotfiles from GitHub"
+echo ""
+print_warning "All packages and configurations are managed by chezmoi"
 echo ""
 
-# Check for apt
 if ! command -v apt-get &> /dev/null; then
     print_error "This script requires apt package manager (Debian/Ubuntu-based distributions)"
     exit 1
@@ -52,145 +54,15 @@ fi
 print_success "apt package manager detected"
 echo ""
 
-#region System Update
-
 print_header "System Update"
 print_info "Updating package lists..."
 sudo apt-get update -qq
 print_success "Package lists updated"
 echo ""
 
-#endregion
+print_header "Basic Utilities"
 
-#region Git Installation
-
-print_header "Git Installation"
-
-if command -v git &> /dev/null; then
-    GIT_VERSION=$(git --version)
-    print_success "Git is already installed: $GIT_VERSION"
-else
-    print_info "Installing Git..."
-    if sudo apt-get install -y git; then
-        GIT_VERSION=$(git --version)
-        print_success "Git installed: $GIT_VERSION"
-    else
-        print_error "Git installation failed"
-        exit 1
-    fi
-fi
-
-echo ""
-
-#endregion
-
-#region chezmoi Installation
-
-print_header "chezmoi Installation"
-
-if command -v chezmoi &> /dev/null; then
-    CHEZMOI_VERSION=$(chezmoi --version | head -n 1)
-    print_success "chezmoi is already installed: $CHEZMOI_VERSION"
-else
-    print_info "Installing chezmoi..."
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
-    
-    # Add to PATH for this session
-    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-        export PATH="$HOME/.local/bin:$PATH"
-    fi
-    
-    # Verify installation
-    if command -v chezmoi &> /dev/null; then
-        CHEZMOI_VERSION=$(chezmoi --version | head -n 1)
-        print_success "chezmoi installed: $CHEZMOI_VERSION"
-    else
-        print_error "chezmoi installation failed"
-        print_info "PATH may need to be updated. Add to ~/.zshrc or ~/.bashrc:"
-        print_info "  export PATH=\"\$HOME/.local/bin:\$PATH\""
-        exit 1
-    fi
-fi
-
-echo ""
-
-#endregion
-
-#region chezmoi Initialization
-
-print_header "chezmoi Initialization"
-
-# Check if chezmoi is already initialized
-if [[ -d "$HOME/.local/share/chezmoi" ]]; then
-    print_success "chezmoi is already initialized"
-    print_info "Source directory: $HOME/.local/share/chezmoi"
-    
-    echo ""
-    read -p "Re-initialize with a different repository? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        print_info "Skipping chezmoi initialization"
-    else
-        print_warning "This will backup your current dotfiles"
-        mv "$HOME/.local/share/chezmoi" "$HOME/.local/share/chezmoi.bak.$(date +%Y%m%d%H%M%S)"
-        print_success "Backed up existing chezmoi directory"
-        
-        # Re-run initialization
-        REINIT=true
-    fi
-else
-    REINIT=true
-fi
-
-if [[ "$REINIT" == "true" ]]; then
-    echo ""
-    print_info "chezmoi manages your dotfiles across machines"
-    print_info "You can initialize it with your dotfiles repository"
-    echo ""
-    print_info "Example repositories:"
-    echo "  • https://github.com/ovestokke/dotfiles"
-    echo "  • https://github.com/yourusername/dotfiles"
-    echo "  • git@github.com:yourusername/dotfiles.git"
-    echo ""
-    
-    read -p "Initialize chezmoi with a dotfiles repository? (Y/n): " -n 1 -r
-    echo
-    
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        print_info "Skipping chezmoi initialization"
-        print_info "You can initialize later with:"
-        print_info "  chezmoi init --apply https://github.com/yourusername/dotfiles.git"
-    else
-        echo ""
-        read -p "Enter your dotfiles repository URL (or press Enter to skip): " DOTFILES_REPO
-        
-        if [[ -z "$DOTFILES_REPO" ]]; then
-            print_info "Skipping chezmoi initialization"
-        else
-            print_info "Initializing chezmoi with: $DOTFILES_REPO"
-            echo ""
-            
-            if chezmoi init --apply "$DOTFILES_REPO"; then
-                print_success "chezmoi initialized successfully"
-                print_info "Your dotfiles have been applied to your home directory"
-            else
-                print_error "chezmoi initialization failed"
-                print_warning "You can try manually with:"
-                print_warning "  chezmoi init --apply $DOTFILES_REPO"
-            fi
-        fi
-    fi
-fi
-
-echo ""
-
-#endregion
-
-#region Additional Utilities
-
-print_header "Additional Utilities"
-
-UTILITIES=("curl" "wget" "unzip")
+UTILITIES=("git" "curl" "wget" "unzip")
 
 for util in "${UTILITIES[@]}"; do
     if command -v "$util" &> /dev/null; then
@@ -200,43 +72,130 @@ for util in "${UTILITIES[@]}"; do
         if sudo apt-get install -y "$util"; then
             print_success "$util installed"
         else
-            print_warning "$util installation failed (non-critical)"
+            print_error "$util installation failed"
+            exit 1
         fi
     fi
 done
 
 echo ""
 
-#endregion
+print_header "Development Tools"
 
-#region Summary
+print_info "Installing Neovim and dependencies..."
 
-print_header "Essentials Setup Complete!"
+if ! grep -q "neovim-ppa/unstable" /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null; then
+    print_info "Adding Neovim PPA..."
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable
+    sudo apt-get update -qq
+fi
+
+DEVTOOLS=("neovim" "build-essential")
+
+for tool in "${DEVTOOLS[@]}"; do
+    if dpkg -l | grep -q "^ii  $tool "; then
+        print_success "$tool is already installed"
+    else
+        print_info "Installing $tool..."
+        if sudo apt-get install -y "$tool"; then
+            print_success "$tool installed"
+        else
+            print_warning "$tool installation failed (non-critical)"
+        fi
+    fi
+done
+
+if command -v lazygit &> /dev/null; then
+    print_success "lazygit is already installed"
+else
+    print_info "Installing lazygit..."
+    if sudo apt-get install -y lazygit; then
+        print_success "lazygit installed"
+    else
+        print_warning "lazygit installation failed (non-critical)"
+    fi
+fi
 
 echo ""
-print_success "Installed tools:"
-[[ $(command -v git) ]] && echo "  • Git: $(git --version)"
-[[ $(command -v chezmoi) ]] && echo "  • chezmoi: $(chezmoi --version | head -n 1)"
-[[ $(command -v curl) ]] && echo "  • curl: $(curl --version | head -n 1)"
-[[ $(command -v wget) ]] && echo "  • wget: $(wget --version | head -n 1)"
-[[ $(command -v unzip) ]] && echo "  • unzip: $(unzip -v | head -n 1)"
+
+print_header "chezmoi Installation & Initialization"
+
+if command -v chezmoi &> /dev/null; then
+    print_success "chezmoi is already installed"
+    CHEZMOI_VERSION=$(chezmoi --version | head -n 1)
+    print_info "Version: $CHEZMOI_VERSION"
+else
+    print_info "Installing chezmoi and initializing dotfiles..."
+    echo ""
+    
+    read -p "Enter your GitHub username [ovestokke]: " GITHUB_USER
+    GITHUB_USER=${GITHUB_USER:-ovestokke}
+    
+    print_info "Installing chezmoi from: https://github.com/$GITHUB_USER/dotfiles"
+    echo ""
+    
+    if sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply "$GITHUB_USER"; then
+        print_success "chezmoi installed and dotfiles applied"
+        
+        if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+            export PATH="$HOME/.local/bin:$PATH"
+        fi
+    else
+        print_error "chezmoi installation failed"
+        exit 1
+    fi
+fi
+
+echo ""
+
+print_header "Setup Complete!"
+
+echo ""
+print_success "Bootstrap complete!"
+echo ""
+print_info "Installed:"
+echo "  • Neovim + dependencies (build-essential)"
+echo "  • lazygit (TUI for git)"
+echo "  • All system packages via chezmoi (git, eza, zoxide, fzf, ripgrep, etc.)"
+echo "  • Zsh + Oh My Zsh + Powerlevel10k (via chezmoi)"
+echo "  • GitHub CLI (gh)"
+echo "  • VS Code extensions (via chezmoi)"
+echo "  • All dotfiles (.zshrc, .gitconfig, etc.)"
+echo ""
+
+if ! command -v zsh &> /dev/null; then
+    print_warning "Zsh installation may still be in progress"
+    echo ""
+    print_info "If zsh is installed, set it as your default shell:"
+    echo -e "  ${YELLOW}chsh -s \$(which zsh)${NC}"
+else
+    CURRENT_SHELL=$(echo $SHELL)
+    if [[ "$CURRENT_SHELL" != *"zsh"* ]]; then
+        echo ""
+        read -p "Set Zsh as default shell? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            chsh -s $(which zsh)
+            print_success "Default shell changed to Zsh"
+            print_warning "Log out and log back in to apply shell change"
+        else
+            print_info "You can change your shell later with: chsh -s \$(which zsh)"
+        fi
+    else
+        print_success "Zsh is already your default shell"
+    fi
+fi
 
 echo ""
 print_info "Next steps:"
-echo "  1. Run setup-packages.sh to install all development tools"
-echo "  2. Or manually install what you need:"
-echo "     - Zsh: sudo apt-get install zsh"
-echo "     - Neovim: Check setup-packages.sh for PPA setup"
-echo "  3. Run setup-github-keys.sh to set up SSH/GPG keys"
-
+echo "  1. Restart your terminal or log out/in"
+echo "  2. Run Powerlevel10k configuration wizard:"
+echo -e "     ${YELLOW}p10k configure${NC}"
 echo ""
-print_info "chezmoi quick reference:"
-echo "  chezmoi status              # View status"
-echo "  chezmoi diff                # See changes"
-echo "  chezmoi apply               # Apply dotfiles"
+print_info "Chezmoi commands:"
+echo "  chezmoi status              # View changes"
+echo "  chezmoi diff                # See differences"
+echo "  chezmoi apply               # Apply changes"
 echo "  chezmoi edit ~/.zshrc       # Edit a dotfile"
-echo "  chezmoi update              # Pull and apply changes"
-
+echo "  chezmoi update              # Pull latest from GitHub"
 echo ""
-
-#endregion

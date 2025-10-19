@@ -1,9 +1,15 @@
 # Linux Setup Scripts
 
-Bash scripts for Linux development environment setup.
+Minimal bootstrap script for Debian/Ubuntu-based Linux distributions (including WSL).
 
 **Requirements:** apt package manager (Debian/Ubuntu-based distributions)  
-**Supported:** Ubuntu, Debian, WSL (Ubuntu/Debian), Linux Mint, Pop!_OS, etc.
+**Supported:** Ubuntu 20.04+, Debian 11+, WSL2 (Ubuntu/Debian), Linux Mint, Pop!_OS
+
+## Philosophy
+
+**All package installation and configuration is handled by [chezmoi](https://www.chezmoi.io/)** via your dotfiles repository.
+
+This script only installs the bare minimum needed to bootstrap chezmoi, which then handles everything else.
 
 ## Quick Start
 
@@ -15,12 +21,6 @@ Run from the repository root:
 bash init-linux.sh
 ```
 
-This offers:
-1. **setup-packages.sh** - Install all packages (comprehensive)
-2. **setup-essentials.sh** - Install Git + chezmoi only
-3. **setup-github-keys.sh** - Generate and upload SSH/GPG keys
-4. **Run full setup** - Automated workflow (1→2→3)
-
 ### Option 2: Remote Installation
 
 ```bash
@@ -29,204 +29,109 @@ curl -fsSL https://raw.githubusercontent.com/ovestokke/bootstrap-client/master/i
 
 ---
 
-## Core Scripts
-
-### setup-packages.sh
-**Comprehensive package installation** - Install everything you need
-
-Installs:
-- **Zsh + Oh My Zsh + Powerlevel10k** - Modern shell with beautiful prompt
-- **Zsh plugins** - autosuggestions, syntax-highlighting
-- **Modern CLI tools** - eza, zoxide, fzf, ripgrep, fd, bat
-- **Neovim** (latest via PPA) + dependencies (lazygit, build-essential)
-- **GitHub CLI** (gh) + GPG (for commit signing)
-- **chezmoi** - Dotfiles manager
-- **Meslo Nerd Font** - Font with icon support
-
-**Usage:**
-```bash
-bash linux/setup-packages.sh
-```
-
-**Time:** 15-20 minutes
-
----
+## Script
 
 ### setup-essentials.sh
-**Minimal setup** - Git + chezmoi only
 
-For when you want to manage everything else via dotfiles.
+Minimal bootstrap script that:
+1. Installs basic system utilities (git, curl, wget, unzip)
+2. Installs development tools (Neovim, lazygit, build-essential)
+3. Installs chezmoi
+4. Initializes your dotfiles from GitHub (`chezmoi init --apply`)
+
+Chezmoi then handles the rest via `.chezmoiscripts` in your dotfiles repo.
 
 **Usage:**
 ```bash
 bash linux/setup-essentials.sh
 ```
 
-**Time:** 2-5 minutes
+**Time:** 5-10 minutes (depending on your dotfiles)
 
 ---
 
-### setup-github-keys.sh
-**GitHub SSH & GPG keys setup**
+## What Chezmoi Installs
 
-- Generates SSH ed25519 key
-- Generates GPG 4096-bit RSA key  
-- Configures Git to auto-sign commits
-- Uploads keys to GitHub via `gh` CLI
-
-**Prerequisites:**
-- Git user.name and user.email configured (from chezmoi dotfiles)
-- GitHub CLI, GPG (auto-installed if missing)
-
-**Usage:**
-```bash
-bash linux/setup-github-keys.sh
-```
-
-**Time:** 10 minutes
-
----
-
-### setup-zsh-linux.sh
-**Zsh-only setup** - Standalone Zsh configuration script
-
-Use this if you only want to set up Zsh without other tools.
-
-**Installs:**
-- Zsh + Oh My Zsh + Powerlevel10k
-- Zsh plugins (autosuggestions, syntax-highlighting)
-- Modern CLI tools (eza, zoxide)
-- chezmoi (dotfiles manager)
-- Meslo Nerd Font
-
-**Usage:**
-```bash
-bash linux/setup-zsh-linux.sh
-```
-
-**Time:** 10-15 minutes
-
----
-
-### setup-wsl.sh
-**Legacy WSL setup script** ⚠️ Deprecated
-
-Use `setup-packages.sh` or `setup-zsh-linux.sh` instead. This script is kept for backwards compatibility but is no longer maintained.
-
----
-
-## Recommended Workflow
-
-### Full Setup (Automated)
-```bash
-# Clone the repository first or use init-linux.sh
-cd ~/bootstrap-client/linux
-
-# Option 1: Run everything
-bash init-linux.sh
-# Choose option 4 (Run full setup)
-
-# Option 2: Step by step
-bash setup-packages.sh     # 1. Install all packages
-bash setup-essentials.sh   # 2. Git + chezmoi (if not using setup-packages.sh)
-chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
-chezmoi apply              # 3. Apply dotfiles
-bash setup-github-keys.sh  # 4. GitHub authentication
-chsh -s $(which zsh)       # 5. Set Zsh as default shell
-```
-
-**Total time:** 20-30 minutes (mostly automated)
-
----
-
-## What Gets Installed
+Your dotfiles repository (via chezmoi) will install and configure:
 
 ### Shell Environment
-- **Zsh** - Modern shell with better features than bash
-- **Oh My Zsh** - Plugin framework and configuration management
-- **Powerlevel10k** - Beautiful and highly configurable prompt
-- **zsh-autosuggestions** - Fish-like autosuggestions based on history
+- **Zsh** - Modern shell
+- **Oh My Zsh** - Plugin framework (via `.chezmoiscripts`)
+- **Powerlevel10k** - Beautiful prompt theme
+- **zsh-autosuggestions** - Fish-like autosuggestions
 - **zsh-syntax-highlighting** - Syntax highlighting for commands
 
 ### Modern CLI Tools
-- **eza** - Better `ls` with colors, icons, and git integration
-- **zoxide** - Smart `cd` that learns your most-used directories
-- **fzf** - Fuzzy finder for files, history, and more
+- **eza** - Better `ls` with colors and icons
+- **zoxide** - Smart `cd` that learns your directories
+- **fzf** - Fuzzy finder for files and history
 - **ripgrep (rg)** - Fast grep alternative
 - **fd** - Fast find alternative
 - **bat** - Better `cat` with syntax highlighting
 
 ### Development Tools
-- **Neovim** - Modern Vim fork (v0.11.2+)
-- **lazygit** - Terminal UI for git
-- **build-essential** - C/C++ compiler and tools (for Neovim plugins)
-- **GitHub CLI (gh)** - GitHub command-line tool
-- **GPG** - For signing git commits
-- **chezmoi** - Dotfiles management system
+- **Neovim** - Modern Vim fork (installed via setup script + PPA)
+- **lazygit** - Terminal UI for git (installed via setup script)
+- **build-essential** - C/C++ compiler and tools for Neovim plugins
+- **GitHub CLI (gh)** - GitHub command-line tool (via chezmoi)
+- **GPG** - For signing git commits (via chezmoi)
+- **git** - Version control (via chezmoi)
 
 ### Fonts
-- **Meslo Nerd Font** - Monospace font with icons and ligatures
+- **Meslo Nerd Font** - Monospace font with icons
 
----
-
-## Configuration Management
-
-**IMPORTANT:** These scripts only install packages. Configuration is managed by chezmoi dotfiles.
-
-### What should be in your dotfiles:
-- `~/.zshrc` - Zsh configuration
-- `~/.zprofile` - Zsh login shell configuration  
-- `~/.config/nvim/` - Neovim configuration (LazyVim)
-- `~/.gitconfig` - Git configuration
-- `~/.wezterm.lua` - WezTerm configuration (if using WezTerm)
-- `~/.p10k.zsh` - Powerlevel10k configuration
-
-### First-time setup:
-```bash
-# Initialize chezmoi with your dotfiles
-chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
-
-# Review what will be changed
-chezmoi diff
-
-# Apply your dotfiles
-chezmoi apply
-
-# Run Powerlevel10k configuration (first time only)
-p10k configure
-```
+See your dotfiles repo's `applications.json` and `.chezmoiscripts/` for the complete list.
 
 ---
 
 ## After Installation
 
-### 1. Set Zsh as default shell
+### 1. Restart your terminal
+Log out and back in, or restart your terminal.
+
+### 2. Set Zsh as default shell (if not already)
 ```bash
 chsh -s $(which zsh)
-# Logout and login, or restart terminal
+# Then logout and login
 ```
 
-### 2. Configure Powerlevel10k (first time only)
+### 3. Configure Powerlevel10k (first time only)
 ```bash
 p10k configure
 ```
 
-Choose your preferred style (lean or rainbow recommended for coolnight theme).
+Choose your preferred style (lean or rainbow recommended).
 
-### 3. Test installations
+---
+
+## Managing Your Configuration
+
+All dotfiles are managed by chezmoi:
+
 ```bash
-# Modern CLI tools
-ls           # Should use eza with icons
-z ~/          # Should use zoxide smart cd
-fzf          # Should open fuzzy finder
-nvim         # Should open Neovim
+# View status
+chezmoi status
 
-# Check versions
-nvim --version
-lazygit --version
-gh --version
-chezmoi --version
+# See what would change
+chezmoi diff
+
+# Apply changes
+chezmoi apply
+
+# Edit a dotfile
+chezmoi edit ~/.zshrc
+
+# Update from GitHub
+chezmoi update
 ```
+
+### What's in your dotfiles:
+- `~/.zshrc` - Zsh configuration
+- `~/.zprofile` - Zsh login shell configuration  
+- `~/.config/nvim/` - Neovim configuration
+- `~/.gitconfig` - Git configuration
+- `~/.wezterm.lua` - WezTerm configuration
+- `~/.p10k.zsh` - Powerlevel10k configuration
 
 ---
 
@@ -260,12 +165,6 @@ cd ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 git pull
 ```
 
-### Update Neovim
-```bash
-sudo apt update
-sudo apt upgrade neovim
-```
-
 ### Update chezmoi dotfiles
 ```bash
 chezmoi update
@@ -281,28 +180,17 @@ chsh -s $(which zsh)
 # Then logout and login
 ```
 
-### Plugins not working
-```bash
-# Verify plugins are installed
-ls ~/.oh-my-zsh/custom/plugins/
+### Packages not installed
+If packages are missing, check your dotfiles repo:
+1. Verify `applications.json` contains the packages
+2. Check `.chezmoiscripts/` for installation scripts
+3. Re-run: `chezmoi apply -v` (verbose mode)
 
-# Check .zshrc configuration
-grep "plugins=" ~/.zshrc
-# Should show: plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
-```
-
-### Command not found (eza, zoxide, etc.)
-```bash
-# Check if installed
-command -v eza
-command -v zoxide
-
-# Check PATH
-echo $PATH | grep -o ".local/bin"
-
-# Add to PATH if needed (should be in dotfiles)
-export PATH="$HOME/.local/bin:$PATH"
-```
+### Chezmoi init failed
+Ensure you have:
+1. Git installed
+2. Internet connection
+3. Correct GitHub username
 
 ### Icons not showing in terminal
 ```bash
@@ -314,25 +202,14 @@ fc-list | grep -i meslo
 # For other terminals: check terminal preferences
 ```
 
-### Neovim version too old
-```bash
-# Check version
-nvim --version
-
-# If < 0.11.2, update from PPA
-sudo apt update
-sudo apt upgrade neovim
-```
-
-### Git config not found (for setup-github-keys.sh)
+### Git config not found
 ```bash
 # Check git config
 git config --global user.name
 git config --global user.email
 
 # Should come from chezmoi dotfiles
-# If empty, initialize and apply dotfiles:
-chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
+# If empty, re-apply dotfiles:
 chezmoi apply
 ```
 
@@ -342,6 +219,5 @@ chezmoi apply
 
 - `../init-linux.sh` - Automated initialization script
 - `../SETUP-GUIDE.md` - Complete setup guide
-- `../Setup-Zsh-README.md` - Detailed Zsh setup documentation
 - `../windows/` - Windows setup scripts
 - `../macos/` - macOS setup scripts
